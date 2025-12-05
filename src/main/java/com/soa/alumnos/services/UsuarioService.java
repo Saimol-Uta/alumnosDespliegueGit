@@ -48,12 +48,15 @@ public class UsuarioService implements UserDetailsService {
             throw new IllegalArgumentException("El email ya está registrado");
         }
 
+        // Si no hay usuarios, el primero será ADMIN
+        boolean esPrimerUsuario = usuarioRepo.count() == 0;
+
         Usuario usuario = Usuario.builder()
                 .username(dto.username())
                 .password(passwordEncoder.encode(dto.password()))
                 .email(dto.email())
                 .nombre(dto.nombre())
-                .rol(Usuario.Rol.SECRETARIA)
+                .rol(esPrimerUsuario ? Usuario.Rol.ADMIN : Usuario.Rol.SECRETARIA)
                 .activo(true)
                 .build();
 
@@ -71,5 +74,9 @@ public class UsuarioService implements UserDetailsService {
 
     public void eliminar(Long id) {
         usuarioRepo.deleteById(id);
+    }
+
+    public long contarUsuarios() {
+        return usuarioRepo.count();
     }
 }

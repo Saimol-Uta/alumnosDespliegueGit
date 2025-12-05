@@ -4,163 +4,488 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alumnos - Sistema de Gestión</title>
+    <title>Alumnos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
         }
-
         .sidebar {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: #111;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px 16px;
+            position: fixed;
+            width: 220px;
         }
-
-        .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 12px 20px;
-            margin: 5px 0;
-            border-radius: 10px;
-            transition: all 0.3s;
-        }
-
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
+        .brand {
             color: white;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 0 12px 24px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 24px;
         }
-
-        .sidebar .nav-link i {
-            margin-right: 10px;
-        }
-
-        .main-content {
-            padding: 30px;
-            background: #f8f9fa;
-            min-height: 100vh;
-        }
-
-        .brand-text {
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            text-decoration: none;
+        .nav-link {
+            color: #888;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
             display: block;
-            margin-bottom: 30px;
+            text-decoration: none;
+            margin-bottom: 4px;
+            transition: all 0.2s;
         }
-
+        .nav-link:hover { color: white; background: #222; }
+        .nav-link.active { color: white; background: #333; }
+        .nav-divider { border-top: 1px solid #333; margin: 16px 0; }
+        .main-content {
+            margin-left: 220px;
+            padding: 32px;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111;
+        }
+        .btn-new {
+            background: #111;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-new:hover { background: #333; color: white; }
+        .alert {
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+        }
+        .alert-success { background: #f0fdf4; color: #166534; }
+        .alert-danger { background: #fef2f2; color: #991b1b; }
         .table-container {
             background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .table {
+            margin: 0;
+            font-size: 14px;
+        }
+        .table thead th {
+            background: #fafafa;
+            border-bottom: 1px solid #eee;
+            font-weight: 500;
+            color: #666;
+            padding: 14px 16px;
+        }
+        .table tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+        .table tbody tr:last-child td { border-bottom: none; }
+        .table tbody tr:hover { background: #fafafa; }
+        .badge {
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-secondary { background: #f3f4f6; color: #6b7280; }
+        .btn-icon {
+            border: none;
+            background: transparent;
+            padding: 6px 8px;
+            border-radius: 4px;
+            color: #666;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .btn-icon:hover { background: #f0f0f0; color: #111; }
+        .btn-icon.danger:hover { background: #fef2f2; color: #991b1b; }
+        
+        /* Modal Styles */
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        .modal-header {
+            border-bottom: 1px solid #eee;
+            padding: 20px 24px;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .modal-footer {
+            border-top: 1px solid #eee;
+            padding: 16px 24px;
+        }
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        .form-control, .form-select {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #111;
+            box-shadow: none;
+        }
+        .btn-cancel {
+            background: #f5f5f5;
+            color: #333;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+        .btn-cancel:hover { background: #e5e5e5; }
+        .btn-submit {
+            background: #111;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+        .btn-submit:hover { background: #333; }
+        .btn-close { opacity: 0.5; }
+        .btn-close:hover { opacity: 1; }
+        
+        /* Detail Styles for View Modal */
+        .detail-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label {
+            width: 100px;
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+        .detail-value {
+            flex: 1;
+            font-size: 14px;
+            color: #111;
         }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar">
-                <a href="#" class="brand-text">
-                    <i class="fas fa-graduation-cap"></i> Sistema
-                </a>
+    <div class="sidebar">
+        <div class="brand">Sistema de Alumnos</div>
+        <nav>
+            <a class="nav-link" th:href="@{/dashboard}">Dashboard</a>
+            <a class="nav-link active" th:href="@{/alumnos}">Alumnos</a>
+            <a class="nav-link" th:href="@{/cursos}" sec:authorize="hasRole('ADMIN')">Cursos</a>
+            <div class="nav-divider"></div>
+            <a class="nav-link" th:href="@{/logout}">Cerrar sesión</a>
+        </nav>
+    </div>
 
-                <nav class="nav flex-column">
-                    <a class="nav-link" th:href="@{/dashboard}">
-                        <i class="fas fa-home"></i> Dashboard
-                    </a>
-                    <a class="nav-link active" th:href="@{/alumnos}">
-                        <i class="fas fa-users"></i> Alumnos
-                    </a>
-                    <a class="nav-link" th:href="@{/cursos}" sec:authorize="hasRole('ADMIN')">
-                        <i class="fas fa-book"></i> Cursos
-                    </a>
-                    <hr class="text-white">
-                    <a class="nav-link" th:href="@{/logout}">
-                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                    </a>
-                </nav>
-            </div>
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Alumnos</h1>
+            <button class="btn-new" data-bs-toggle="modal" data-bs-target="#modalNuevo">+ Nuevo Alumno</button>
+        </div>
 
-            <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 main-content">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2><i class="fas fa-users"></i> Gestión de Alumnos</h2>
-                    <a th:href="@{/alumnos/nuevo}" class="btn btn-primary">
-                        <i class="fas fa-user-plus"></i> Nuevo Alumno
-                    </a>
+        <div th:if="${mensaje}" class="alert alert-success">
+            <span th:text="${mensaje}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger">
+            <span th:text="${error}"></span>
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Cédula</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Teléfono</th>
+                        <th>Curso</th>
+                        <th style="width: 120px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="alumno : ${alumnos}">
+                        <td th:text="${alumno.cedula}"></td>
+                        <td th:text="${alumno.nombre}"></td>
+                        <td th:text="${alumno.apellido}"></td>
+                        <td th:text="${alumno.telefono}"></td>
+                        <td>
+                            <span th:if="${alumno.curso != null}" class="badge badge-success" th:text="${alumno.curso.nombre}"></span>
+                            <span th:if="${alumno.curso == null}" class="badge badge-secondary">Sin asignar</span>
+                        </td>
+                        <td>
+                            <button class="btn-icon" title="Ver"
+                                    th:data-cedula="${alumno.cedula}"
+                                    th:data-nombre="${alumno.nombre}"
+                                    th:data-apellido="${alumno.apellido}"
+                                    th:data-direccion="${alumno.direccion}"
+                                    th:data-telefono="${alumno.telefono}"
+                                    th:data-curso="${alumno.curso != null ? alumno.curso.nombre : 'Sin asignar'}"
+                                    onclick="abrirModalVer(this)">👁</button>
+                            <button class="btn-icon" title="Editar" 
+                                    th:data-cedula="${alumno.cedula}"
+                                    th:data-nombre="${alumno.nombre}"
+                                    th:data-apellido="${alumno.apellido}"
+                                    th:data-direccion="${alumno.direccion}"
+                                    th:data-telefono="${alumno.telefono}"
+                                    th:data-curso-id="${alumno.curso != null ? alumno.curso.id : ''}"
+                                    onclick="abrirModalEditar(this)">✏️</button>
+                            <button class="btn-icon danger" title="Eliminar"
+                                    th:data-cedula="${alumno.cedula}"
+                                    th:data-nombre="${alumno.nombre + ' ' + alumno.apellido}"
+                                    onclick="abrirModalEliminar(this)">🗑</button>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(alumnos)}">
+                        <td colspan="6" style="text-align: center; color: #999; padding: 40px;">
+                            No hay alumnos registrados
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Nuevo Alumno -->
+    <div class="modal fade" id="modalNuevo" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Alumno</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
-                <!-- Alertas -->
-                <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show">
-                    <i class="fas fa-check-circle"></i> <span th:text="${mensaje}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
-                    <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-
-                <div class="table-container">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Cédula</th>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Teléfono</th>
-                                    <th>Curso</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="alumno : ${alumnos}">
-                                    <td th:text="${alumno.cedula}"></td>
-                                    <td th:text="${alumno.nombre}"></td>
-                                    <td th:text="${alumno.apellido}"></td>
-                                    <td th:text="${alumno.telefono}"></td>
-                                    <td>
-                                        <span th:if="${alumno.curso != null}" class="badge bg-success"
-                                            th:text="${alumno.curso.nombre}"></span>
-                                        <span th:if="${alumno.curso == null}" class="badge bg-secondary">Sin
-                                            asignar</span>
-                                    </td>
-                                    <td>
-                                        <a th:href="@{/alumnos/{cedula}(cedula=${alumno.cedula})}"
-                                            class="btn btn-sm btn-info" title="Ver">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a th:href="@{/alumnos/editar/{cedula}(cedula=${alumno.cedula})}"
-                                            class="btn btn-sm btn-warning" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a th:href="@{/alumnos/eliminar/{cedula}(cedula=${alumno.cedula})}"
-                                            class="btn btn-sm btn-danger" title="Eliminar"
-                                            onclick="return confirm('¿Está seguro de eliminar este alumno?')">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr th:if="${#lists.isEmpty(alumnos)}">
-                                    <td colspan="6" class="text-center text-muted">
-                                        No hay alumnos registrados
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <form th:action="@{/alumnos/nuevo}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Cédula *</label>
+                            <input type="text" class="form-control" name="cedula" required maxlength="10" pattern="[0-9]{10}" title="Debe contener 10 dígitos">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre *</label>
+                                <input type="text" class="form-control" name="nombre" required maxlength="50">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Apellido *</label>
+                                <input type="text" class="form-control" name="apellido" required maxlength="50">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Dirección</label>
+                            <input type="text" class="form-control" name="direccion" maxlength="200">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text" class="form-control" name="telefono" maxlength="15">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Curso</label>
+                            <select class="form-select" name="cursoId">
+                                <option value="">Sin asignar</option>
+                                <option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nombre}"></option>
+                            </select>
+                        </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn-submit">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Alumno -->
+    <div class="modal fade" id="modalEditar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Alumno</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="formEditar" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Cédula</label>
+                            <input type="text" class="form-control" id="editCedula" disabled>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nombre *</label>
+                                <input type="text" class="form-control" id="editNombre" name="nombre" required maxlength="50">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Apellido *</label>
+                                <input type="text" class="form-control" id="editApellido" name="apellido" required maxlength="50">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="editDireccion" name="direccion" maxlength="200">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text" class="form-control" id="editTelefono" name="telefono" maxlength="15">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Curso</label>
+                            <select class="form-select" id="editCursoId" name="cursoId">
+                                <option value="">Sin asignar</option>
+                                <option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nombre}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn-submit">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Eliminar -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom: none;">
+                    <h5 class="modal-title">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+                    <p style="font-size: 16px; color: #333; margin-bottom: 8px;">¿Está seguro de eliminar al alumno?</p>
+                    <p style="font-size: 18px; font-weight: 600; color: #111;" id="eliminarNombre"></p>
+                </div>
+                <div class="modal-footer" style="border-top: none; justify-content: center;">
+                    <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <a id="btnConfirmarEliminar" href="#" class="btn-submit" style="background: #dc3545; text-decoration: none;">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ver Alumno -->
+    <div class="modal fade" id="modalVer" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle del Alumno</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="detail-row">
+                        <span class="detail-label">Cédula</span>
+                        <span class="detail-value" id="verCedula"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Nombre</span>
+                        <span class="detail-value" id="verNombre"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Apellido</span>
+                        <span class="detail-value" id="verApellido"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Dirección</span>
+                        <span class="detail-value" id="verDireccion"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Teléfono</span>
+                        <span class="detail-value" id="verTelefono"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Curso</span>
+                        <span class="detail-value" id="verCurso"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        function abrirModalVer(btn) {
+            document.getElementById('verCedula').textContent = btn.dataset.cedula;
+            document.getElementById('verNombre').textContent = btn.dataset.nombre;
+            document.getElementById('verApellido').textContent = btn.dataset.apellido;
+            document.getElementById('verDireccion').textContent = btn.dataset.direccion || '-';
+            document.getElementById('verTelefono').textContent = btn.dataset.telefono || '-';
+            document.getElementById('verCurso').textContent = btn.dataset.curso;
+            
+            new bootstrap.Modal(document.getElementById('modalVer')).show();
+        }
+
+        function abrirModalEditar(btn) {
+            const cedula = btn.dataset.cedula;
+            const nombre = btn.dataset.nombre;
+            const apellido = btn.dataset.apellido;
+            const direccion = btn.dataset.direccion;
+            const telefono = btn.dataset.telefono;
+            const cursoId = btn.dataset.cursoId;
+
+            document.getElementById('editCedula').value = cedula;
+            document.getElementById('editNombre').value = nombre;
+            document.getElementById('editApellido').value = apellido;
+            document.getElementById('editDireccion').value = direccion || '';
+            document.getElementById('editTelefono').value = telefono || '';
+            document.getElementById('editCursoId').value = cursoId || '';
+            
+            document.getElementById('formEditar').action = '/alumnos/editar/' + cedula;
+            
+            new bootstrap.Modal(document.getElementById('modalEditar')).show();
+        }
+
+        function abrirModalEliminar(btn) {
+            const cedula = btn.dataset.cedula;
+            const nombre = btn.dataset.nombre;
+            
+            document.getElementById('eliminarNombre').textContent = nombre;
+            document.getElementById('btnConfirmarEliminar').href = '/alumnos/eliminar/' + cedula;
+            
+            new bootstrap.Modal(document.getElementById('modalEliminar')).show();
+        }
+    </script>
 </body>
 
 </html>

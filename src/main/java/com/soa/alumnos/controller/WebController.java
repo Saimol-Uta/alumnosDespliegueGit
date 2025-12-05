@@ -39,6 +39,7 @@ public class WebController {
     @GetMapping("/registro")
     public String mostrarRegistro(Model model) {
         model.addAttribute("usuario", new RegistroUsuarioDto("", "", "", ""));
+        model.addAttribute("esPrimerUsuario", usuarioService.contarUsuarios() == 0);
         return "registro";
     }
 
@@ -161,6 +162,10 @@ public class WebController {
     @GetMapping("/cursos")
     public String listarCursos(Model model) {
         model.addAttribute("cursos", cursoService.listarConAlumnos());
+        model.addAttribute("alumnosDisponibles", alumnoService.listar().stream()
+                .filter(a -> a.getCurso() == null)
+                .toList());
+        model.addAttribute("todosAlumnos", alumnoService.listar());
         return "cursos/lista";
     }
 
@@ -246,7 +251,7 @@ public class WebController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
-        return "redirect:/cursos/" + id;
+        return "redirect:/cursos";
     }
 
     @GetMapping("/cursos/{id}/desasignar-alumno/{cedula}")

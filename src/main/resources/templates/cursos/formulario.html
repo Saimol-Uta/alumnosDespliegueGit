@@ -1,131 +1,154 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuevo Curso - Sistema de Gestión</title>
+    <title>Nuevo Curso</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
         }
-
         .sidebar {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: #111;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px 16px;
+            position: fixed;
+            width: 220px;
         }
-
-        .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 12px 20px;
-            margin: 5px 0;
-            border-radius: 10px;
-            transition: all 0.3s;
-        }
-
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
+        .brand {
             color: white;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 0 12px 24px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 24px;
         }
-
-        .sidebar .nav-link i {
-            margin-right: 10px;
-        }
-
-        .main-content {
-            padding: 30px;
-            background: #f8f9fa;
-            min-height: 100vh;
-        }
-
-        .brand-text {
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            text-decoration: none;
+        .nav-link {
+            color: #888;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
             display: block;
-            margin-bottom: 30px;
+            text-decoration: none;
+            margin-bottom: 4px;
+            transition: all 0.2s;
         }
-
-        .form-container {
+        .nav-link:hover { color: white; background: #222; }
+        .nav-link.active { color: white; background: #333; }
+        .nav-divider { border-top: 1px solid #333; margin: 16px 0; }
+        .main-content {
+            margin-left: 220px;
+            padding: 32px;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111;
+        }
+        .btn-back {
+            background: #f5f5f5;
+            color: #111;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-back:hover { background: #e5e5e5; color: #111; }
+        .form-card {
             background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            border-radius: 8px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            max-width: 500px;
         }
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus {
+            border-color: #111;
+            box-shadow: none;
+        }
+        .form-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+        .btn-submit {
+            background: #111;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover { background: #333; }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar">
-                <a href="#" class="brand-text">
-                    <i class="fas fa-graduation-cap"></i> Sistema
-                </a>
+    <div class="sidebar">
+        <div class="brand">Sistema de Alumnos</div>
+        <nav>
+            <a class="nav-link" th:href="@{/dashboard}">Dashboard</a>
+            <a class="nav-link" th:href="@{/alumnos}">Alumnos</a>
+            <a class="nav-link active" th:href="@{/cursos}" sec:authorize="hasRole('ADMIN')">Cursos</a>
+            <div class="nav-divider"></div>
+            <a class="nav-link" th:href="@{/logout}">Cerrar sesión</a>
+        </nav>
+    </div>
 
-                <nav class="nav flex-column">
-                    <a class="nav-link" th:href="@{/dashboard}">
-                        <i class="fas fa-home"></i> Dashboard
-                    </a>
-                    <a class="nav-link" th:href="@{/alumnos}">
-                        <i class="fas fa-users"></i> Alumnos
-                    </a>
-                    <a class="nav-link active" th:href="@{/cursos}" sec:authorize="hasRole('ADMIN')">
-                        <i class="fas fa-book"></i> Cursos
-                    </a>
-                    <hr class="text-white">
-                    <a class="nav-link" th:href="@{/logout}">
-                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                    </a>
-                </nav>
-            </div>
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Nuevo Curso</h1>
+            <a th:href="@{/cursos}" class="btn-back">← Volver</a>
+        </div>
 
-            <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 main-content">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2><i class="fas fa-plus-circle"></i> Nuevo Curso</h2>
-                    <a th:href="@{/cursos}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Volver
-                    </a>
+        <div class="form-card">
+            <form th:action="@{/cursos/nuevo}" th:object="${curso}" method="post">
+                <div class="mb-3">
+                    <label for="codigo" class="form-label">Código *</label>
+                    <input type="text" class="form-control" id="codigo" name="codigo" placeholder="Ej: MAT101" required maxlength="20">
+                    <div class="form-hint">Código único para identificar el curso</div>
                 </div>
 
-                <div class="form-container">
-                    <form th:action="@{/cursos/nuevo}" th:object="${curso}" method="post">
-                        <div class="mb-3">
-                            <label for="codigo" class="form-label">Código *</label>
-                            <input type="text" class="form-control" id="codigo" name="codigo" placeholder="Ej: MAT101"
-                                required maxlength="20">
-                            <small class="text-muted">Código único para identificar el curso</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre *</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre"
-                                placeholder="Ingrese el nombre del curso" required maxlength="100">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="descripcion" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="descripcion" name="descripcion" rows="3"
-                                placeholder="Descripción del curso (opcional)" maxlength="255"></textarea>
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Guardar Curso
-                            </button>
-                        </div>
-                    </form>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre *</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre del curso" required maxlength="100">
                 </div>
-            </div>
+
+                <div class="mb-4">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <textarea class="form-control" id="descripcion" name="descripcion" rows="3" placeholder="Descripción del curso (opcional)" maxlength="255"></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Guardar Curso</button>
+            </form>
         </div>
     </div>
 

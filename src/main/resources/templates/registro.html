@@ -4,111 +4,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión de Alumnos - Registro</title>
+    <title>Crear Cuenta</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <style>
+        * { box-sizing: border-box; }
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin: 0;
             padding: 20px;
         }
-
-        .register-card {
+        .register-container {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            padding: 40px;
+            padding: 48px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 450px;
+            max-width: 420px;
         }
-
-        .register-card h2 {
-            color: #333;
+        .logo {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
-
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111;
+            margin: 0;
+        }
+        .logo p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 6px;
+        }
         .form-control {
-            border-radius: 10px;
-            padding: 12px 15px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             padding: 12px;
-            font-weight: bold;
+            font-size: 14px;
+            transition: border-color 0.2s;
         }
-
+        .form-control:focus {
+            border-color: #111;
+            box-shadow: none;
+        }
+        .btn-primary {
+            background: #111;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            width: 100%;
+            transition: background 0.2s;
+        }
         .btn-primary:hover {
-            background: linear-gradient(135deg, #5a6fd6 0%, #6a4190 100%);
+            background: #333;
         }
+        .alert {
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            padding: 12px 16px;
+        }
+        .alert-danger { background: #fef2f2; color: #991b1b; }
+        .alert-info { background: #eff6ff; color: #1e40af; }
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            color: #999;
+            font-size: 13px;
+        }
+        .login-link {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+        .login-link a {
+            color: #111;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .login-link a:hover { text-decoration: underline; }
     </style>
 </head>
 
 <body>
-    <div class="register-card">
-        <h2><i class="fas fa-user-plus"></i> Crear Cuenta</h2>
+    <div class="register-container">
+        <div class="logo">
+            <h1>Crear Cuenta</h1>
+            <p>Completa tus datos para registrarte</p>
+        </div>
 
-        <div th:if="${error}" class="alert alert-danger">
-            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+        <!-- Aviso de primer usuario = ADMIN -->
+        <div th:if="${esPrimerUsuario}" class="alert alert-info mb-3">
+            ⭐ Serás registrado como <strong>Administrador</strong>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger mb-3">
+            <span th:text="${error}"></span>
         </div>
 
         <form th:action="@{/registro}" th:object="${usuario}" method="post">
             <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre Completo</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                    <input type="text" class="form-control" id="nombre" name="nombre"
-                        placeholder="Ingrese su nombre completo" required>
-                </div>
+                <label for="nombre" class="form-label">Nombre completo</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" 
+                    placeholder="Tu nombre completo" required>
             </div>
 
             <div class="mb-3">
-                <label for="username" class="form-label">Nombre de Usuario</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                    <input type="text" class="form-control" id="username" name="username"
-                        placeholder="Ingrese un nombre de usuario" required>
-                </div>
+                <label for="username" class="form-label">Usuario</label>
+                <input type="text" class="form-control" id="username" name="username" 
+                    placeholder="Elige un nombre de usuario" required>
             </div>
 
             <div class="mb-3">
-                <label for="email" class="form-label">Correo Electrónico</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                    <input type="email" class="form-control" id="email" name="email"
-                        placeholder="Ingrese su correo electrónico" required>
-                </div>
+                <label for="email" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="email" name="email" 
+                    placeholder="tu@email.com" required>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-4">
                 <label for="password" class="form-label">Contraseña</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                    <input type="password" class="form-control" id="password" name="password"
-                        placeholder="Ingrese una contraseña (mín. 6 caracteres)" required minlength="6">
-                </div>
+                <input type="password" class="form-control" id="password" name="password" 
+                    placeholder="Mínimo 6 caracteres" required minlength="6">
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="fas fa-user-plus"></i> Registrarse
-            </button>
+            <button type="submit" class="btn btn-primary">Crear cuenta</button>
         </form>
 
-        <hr>
+        <div class="divider">o</div>
 
-        <p class="text-center">
-            ¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión aquí</a>
+        <p class="login-link">
+            ¿Ya tienes cuenta? <a th:href="@{/login}">Iniciar sesión</a>
         </p>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

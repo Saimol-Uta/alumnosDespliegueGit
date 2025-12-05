@@ -1,232 +1,309 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle Curso - Sistema de Gestión</title>
+    <title>Detalle Curso</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
         }
-
         .sidebar {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: #111;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px 16px;
+            position: fixed;
+            width: 220px;
         }
-
-        .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 12px 20px;
-            margin: 5px 0;
-            border-radius: 10px;
-            transition: all 0.3s;
-        }
-
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background: rgba(255, 255, 255, 0.2);
+        .brand {
             color: white;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 0 12px 24px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 24px;
         }
-
-        .sidebar .nav-link i {
-            margin-right: 10px;
-        }
-
-        .main-content {
-            padding: 30px;
-            background: #f8f9fa;
-            min-height: 100vh;
-        }
-
-        .brand-text {
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            text-decoration: none;
+        .nav-link {
+            color: #888;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
             display: block;
-            margin-bottom: 30px;
+            text-decoration: none;
+            margin-bottom: 4px;
+            transition: all 0.2s;
         }
-
-        .detail-card {
+        .nav-link:hover { color: white; background: #222; }
+        .nav-link.active { color: white; background: #333; }
+        .nav-divider { border-top: 1px solid #333; margin: 16px 0; }
+        .main-content {
+            margin-left: 220px;
+            padding: 32px;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111;
+        }
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-back {
+            background: #f5f5f5;
+            color: #111;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-back:hover { background: #e5e5e5; color: #111; }
+        .btn-edit {
+            background: #111;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-edit:hover { background: #333; color: white; }
+        .card {
             background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border: none;
         }
-
-        .detail-item {
-            padding: 15px 0;
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
             border-bottom: 1px solid #eee;
         }
-
-        .detail-item:last-child {
-            border-bottom: none;
+        .detail-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
         }
-
+        .detail-row:last-child { border-bottom: none; }
         .detail-label {
-            font-weight: bold;
+            width: 120px;
+            font-size: 14px;
             color: #666;
         }
-
-        .student-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
+        .detail-value {
+            flex: 1;
+            font-size: 14px;
+            color: #111;
         }
+        .badge {
+            background: #111;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-count {
+            background: #f5f5f5;
+            color: #111;
+        }
+        .form-select {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+        .form-select:focus {
+            border-color: #111;
+            box-shadow: none;
+        }
+        .btn-assign {
+            background: #111;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 14px;
+        }
+        .btn-assign:hover { background: #333; color: white; }
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+        .student-info strong {
+            font-size: 14px;
+            color: #111;
+        }
+        .student-info small {
+            font-size: 12px;
+            color: #666;
+        }
+        .btn-remove {
+            background: none;
+            border: 1px solid #ddd;
+            color: #666;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 12px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-remove:hover {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 32px;
+            color: #999;
+            font-size: 14px;
+        }
+        .alert {
+            border: none;
+            border-radius: 6px;
+            padding: 12px 16px;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-danger { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 sidebar">
-                <a href="#" class="brand-text">
-                    <i class="fas fa-graduation-cap"></i> Sistema
-                </a>
+    <div class="sidebar">
+        <div class="brand">Sistema de Alumnos</div>
+        <nav>
+            <a class="nav-link" th:href="@{/dashboard}">Dashboard</a>
+            <a class="nav-link" th:href="@{/alumnos}">Alumnos</a>
+            <a class="nav-link active" th:href="@{/cursos}" sec:authorize="hasRole('ADMIN')">Cursos</a>
+            <div class="nav-divider"></div>
+            <a class="nav-link" th:href="@{/logout}">Cerrar sesión</a>
+        </nav>
+    </div>
 
-                <nav class="nav flex-column">
-                    <a class="nav-link" th:href="@{/dashboard}">
-                        <i class="fas fa-home"></i> Dashboard
-                    </a>
-                    <a class="nav-link" th:href="@{/alumnos}">
-                        <i class="fas fa-users"></i> Alumnos
-                    </a>
-                    <a class="nav-link active" th:href="@{/cursos}" sec:authorize="hasRole('ADMIN')">
-                        <i class="fas fa-book"></i> Cursos
-                    </a>
-                    <hr class="text-white">
-                    <a class="nav-link" th:href="@{/logout}">
-                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                    </a>
-                </nav>
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Detalle del Curso</h1>
+            <div class="header-actions">
+                <a th:href="@{/cursos/editar/{id}(id=${curso.id})}" class="btn-edit">Editar</a>
+                <a th:href="@{/cursos}" class="btn-back">← Volver</a>
+            </div>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${mensaje}" class="alert alert-success">
+            <span th:text="${mensaje}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger">
+            <span th:text="${error}"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <h3 class="card-title">Información del Curso</h3>
+                    
+                    <div class="detail-row">
+                        <div class="detail-label">ID</div>
+                        <div class="detail-value" th:text="${curso.id}"></div>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <div class="detail-label">Código</div>
+                        <div class="detail-value">
+                            <span class="badge" th:text="${curso.codigo}"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <div class="detail-label">Nombre</div>
+                        <div class="detail-value" th:text="${curso.nombre}"></div>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <div class="detail-label">Descripción</div>
+                        <div class="detail-value" th:text="${curso.descripcion ?: 'Sin descripción'}"></div>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <div class="detail-label">Alumnos</div>
+                        <div class="detail-value">
+                            <span class="badge badge-count" th:text="${curso.totalAlumnos}"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="col-md-9 col-lg-10 main-content">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2><i class="fas fa-book"></i> Detalle del Curso</h2>
-                    <div>
-                        <a th:href="@{/cursos/editar/{id}(id=${curso.id})}" class="btn btn-warning">
-                            <i class="fas fa-edit"></i> Editar
+            <div class="col-lg-6">
+                <div class="card">
+                    <h3 class="card-title">Asignar Alumno</h3>
+                    
+                    <form th:action="@{/cursos/{id}/asignar-alumno(id=${curso.id})}" method="post">
+                        <div class="d-flex gap-2">
+                            <select class="form-select" name="cedula" required>
+                                <option value="">Seleccionar alumno...</option>
+                                <option th:each="alumno : ${alumnosDisponibles}" 
+                                        th:value="${alumno.cedula}"
+                                        th:text="${alumno.nombre + ' ' + alumno.apellido + ' (' + alumno.cedula + ')'}">
+                                </option>
+                            </select>
+                            <button type="submit" class="btn-assign">Asignar</button>
+                        </div>
+                        <small class="text-muted mt-2 d-block" th:if="${#lists.isEmpty(alumnosDisponibles)}">
+                            No hay alumnos disponibles
+                        </small>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="card-title">Alumnos Inscritos (<span th:text="${curso.totalAlumnos}"></span>)</h3>
+            
+            <div class="row">
+                <div th:each="alumno : ${curso.alumnos}" class="col-md-6 col-lg-4">
+                    <div class="student-item">
+                        <div class="student-info">
+                            <strong th:text="${alumno.nombre + ' ' + alumno.apellido}"></strong>
+                            <br>
+                            <small th:text="${'Cédula: ' + alumno.cedula}"></small>
+                        </div>
+                        <a th:href="@{/cursos/{id}/desasignar-alumno/{cedula}(id=${curso.id}, cedula=${alumno.cedula})}"
+                           class="btn-remove"
+                           onclick="return confirm('¿Desasignar este alumno?')">
+                            ✕
                         </a>
-                        <a th:href="@{/cursos}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Volver
-                        </a>
                     </div>
                 </div>
-
-                <!-- Alertas -->
-                <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show">
-                    <i class="fas fa-check-circle"></i> <span th:text="${mensaje}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
-                    <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-6 mb-4">
-                        <div class="detail-card">
-                            <h4 class="mb-4">
-                                <i class="fas fa-info-circle text-primary"></i>
-                                Información del Curso
-                            </h4>
-
-                            <div class="detail-item row">
-                                <div class="col-4 detail-label">ID:</div>
-                                <div class="col-8" th:text="${curso.id}"></div>
-                            </div>
-
-                            <div class="detail-item row">
-                                <div class="col-4 detail-label">Código:</div>
-                                <div class="col-8">
-                                    <span class="badge bg-info" th:text="${curso.codigo}"></span>
-                                </div>
-                            </div>
-
-                            <div class="detail-item row">
-                                <div class="col-4 detail-label">Nombre:</div>
-                                <div class="col-8" th:text="${curso.nombre}"></div>
-                            </div>
-
-                            <div class="detail-item row">
-                                <div class="col-4 detail-label">Descripción:</div>
-                                <div class="col-8" th:text="${curso.descripcion ?: 'Sin descripción'}"></div>
-                            </div>
-
-                            <div class="detail-item row">
-                                <div class="col-4 detail-label">Total Alumnos:</div>
-                                <div class="col-8">
-                                    <span class="badge bg-primary" th:text="${curso.totalAlumnos}"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6 mb-4">
-                        <div class="detail-card">
-                            <h4 class="mb-4">
-                                <i class="fas fa-user-plus text-success"></i>
-                                Asignar Alumno
-                            </h4>
-
-                            <form th:action="@{/cursos/{id}/asignar-alumno(id=${curso.id})}" method="post" class="mb-3">
-                                <div class="input-group">
-                                    <select class="form-select" name="cedula" required>
-                                        <option value="">-- Seleccionar alumno --</option>
-                                        <option th:each="alumno : ${alumnosDisponibles}" th:value="${alumno.cedula}"
-                                            th:text="${alumno.nombre + ' ' + alumno.apellido + ' (' + alumno.cedula + ')'}">
-                                        </option>
-                                    </select>
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="fas fa-plus"></i> Asignar
-                                    </button>
-                                </div>
-                                <small class="text-muted" th:if="${#lists.isEmpty(alumnosDisponibles)}">
-                                    No hay alumnos disponibles para asignar
-                                </small>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="detail-card">
-                    <h4 class="mb-4">
-                        <i class="fas fa-users text-primary"></i>
-                        Alumnos Inscritos (<span th:text="${curso.totalAlumnos}"></span>)
-                    </h4>
-
-                    <div class="row">
-                        <div th:each="alumno : ${curso.alumnos}" class="col-md-6 col-lg-4">
-                            <div class="student-card d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong th:text="${alumno.nombre + ' ' + alumno.apellido}"></strong>
-                                    <br>
-                                    <small class="text-muted" th:text="${'Cédula: ' + alumno.cedula}"></small>
-                                </div>
-                                <a th:href="@{/cursos/{id}/desasignar-alumno/{cedula}(id=${curso.id}, cedula=${alumno.cedula})}"
-                                    class="btn btn-sm btn-outline-danger"
-                                    onclick="return confirm('¿Desasignar este alumno del curso?')" title="Desasignar">
-                                    <i class="fas fa-times"></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div th:if="${#lists.isEmpty(curso.alumnos)}" class="col-12">
-                            <p class="text-muted text-center">
-                                <i class="fas fa-info-circle"></i> No hay alumnos inscritos en este curso
-                            </p>
-                        </div>
-                    </div>
-                </div>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(curso.alumnos)}" class="empty-state">
+                No hay alumnos inscritos en este curso
             </div>
         </div>
     </div>

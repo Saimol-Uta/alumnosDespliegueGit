@@ -4,100 +4,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión de Alumnos - Login</title>
+    <title>Iniciar Sesión</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <style>
+        * { box-sizing: border-box; }
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin: 0;
         }
-
-        .login-card {
+        .login-container {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            padding: 40px;
+            padding: 48px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 380px;
         }
-
-        .login-card h2 {
-            color: #333;
+        .logo {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
-
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #111;
+            margin: 0;
+        }
+        .logo p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 6px;
+        }
         .form-control {
-            border-radius: 10px;
-            padding: 12px 15px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             padding: 12px;
-            font-weight: bold;
+            font-size: 14px;
+            transition: border-color 0.2s;
         }
-
+        .form-control:focus {
+            border-color: #111;
+            box-shadow: none;
+        }
+        .btn-primary {
+            background: #111;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            width: 100%;
+            transition: background 0.2s;
+        }
         .btn-primary:hover {
-            background: linear-gradient(135deg, #5a6fd6 0%, #6a4190 100%);
+            background: #333;
         }
+        .alert {
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            padding: 12px 16px;
+        }
+        .alert-danger { background: #fef2f2; color: #991b1b; }
+        .alert-success { background: #f0fdf4; color: #166534; }
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            color: #999;
+            font-size: 13px;
+        }
+        .register-link {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+        .register-link a {
+            color: #111;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .register-link a:hover { text-decoration: underline; }
     </style>
 </head>
 
 <body>
-    <div class="login-card">
-        <h2><i class="fas fa-graduation-cap"></i> Sistema de Alumnos</h2>
-
-        <div th:if="${param.error}" class="alert alert-danger">
-            <i class="fas fa-exclamation-circle"></i> Usuario o contraseña incorrectos
+    <div class="login-container">
+        <div class="logo">
+            <h1>Sistema de Alumnos</h1>
+            <p>Ingresa a tu cuenta</p>
         </div>
 
-        <div th:if="${param.logout}" class="alert alert-success">
-            <i class="fas fa-check-circle"></i> Sesión cerrada exitosamente
+        <div th:if="${param.error}" class="alert alert-danger mb-3">
+            Usuario o contraseña incorrectos
         </div>
 
-        <div th:if="${mensaje}" class="alert alert-success">
-            <i class="fas fa-check-circle"></i> <span th:text="${mensaje}"></span>
+        <div th:if="${param.logout}" class="alert alert-success mb-3">
+            Sesión cerrada exitosamente
+        </div>
+
+        <div th:if="${mensaje}" class="alert alert-success mb-3">
+            <span th:text="${mensaje}"></span>
         </div>
 
         <form th:action="@{/login}" method="post">
             <div class="mb-3">
                 <label for="username" class="form-label">Usuario</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                    <input type="text" class="form-control" id="username" name="username"
-                        placeholder="Ingrese su usuario" required>
-                </div>
+                <input type="text" class="form-control" id="username" name="username" 
+                    placeholder="Ingresa tu usuario" required autofocus>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-4">
                 <label for="password" class="form-label">Contraseña</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                    <input type="password" class="form-control" id="password" name="password"
-                        placeholder="Ingrese su contraseña" required>
-                </div>
+                <input type="password" class="form-control" id="password" name="password" 
+                    placeholder="Ingresa tu contraseña" required>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-            </button>
+            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
         </form>
 
-        <hr>
+        <div class="divider">o</div>
 
-        <p class="text-center">
-            ¿No tienes cuenta? <a th:href="@{/registro}">Regístrate aquí</a>
+        <p class="register-link">
+            ¿No tienes cuenta? <a th:href="@{/registro}">Crear cuenta</a>
         </p>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
