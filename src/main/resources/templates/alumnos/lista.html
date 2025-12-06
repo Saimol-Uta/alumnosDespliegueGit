@@ -316,7 +316,7 @@
                 <div class="input-group" style="width: 260px;">
                     <span class="input-group-text" style="background: #f3f4f6; border: 1px solid #ddd;"><i
                             class="bi bi-search"></i></span>
-                    <input type="text" id="buscadorCedula" class="form-control" placeholder="Buscar por cédula..."
+                    <input type="text" id="buscadorCedula" class="form-control" maxlength="10" oninput="soloNumeros(this)" placeholder="Buscar por cédula..."
                         style="border: 1px solid #ddd;">
                 </div>
                 <button class="btn-new" data-bs-toggle="modal" data-bs-target="#modalNuevo">Nuevo Alumno <i

@@ -331,7 +331,7 @@
                 <div class="input-group" style="width: 260px;">
                     <span class="input-group-text" style="background: #f3f4f6; border: 1px solid #ddd;"><i
                             class="bi bi-search"></i></span>
-                    <input type="text" id="buscadorCursoNombre" class="form-control" placeholder="Buscar por nombre..."
+                    <input type="text" id="buscadorCursoNombre" class="form-control" maxlength="40" placeholder="Buscar por nombre..."
                         style="border: 1px solid #ddd;">
                 </div>
                 <button class="btn-new" data-bs-toggle="modal" data-bs-target="#modalNuevo">Nuevo Curso <i
@@ -362,7 +362,7 @@
                 <tbody>
                     <tr th:each="curso : ${cursos}">
                         <td th:text="${curso.id}"></td>
-                        <td><span class="badge badge-info" th:text="${curso.codigo}"></span></td>
+                        <td><span th:text="${curso.codigo}"></span></td>
                         <td th:text="${curso.nombre}"></td>
                         <td>
                             <div class="descripcion-limitada" th:text="${curso.descripcion ?: 'Sin descripción'}"
