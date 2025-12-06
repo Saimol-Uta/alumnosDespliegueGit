@@ -8,12 +8,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f5f5f5;
             min-height: 100vh;
         }
+
         .sidebar {
             background: #111;
             min-height: 100vh;
@@ -21,6 +27,7 @@
             position: fixed;
             width: 220px;
         }
+
         .brand {
             color: white;
             font-size: 18px;
@@ -29,6 +36,7 @@
             border-bottom: 1px solid #333;
             margin-bottom: 24px;
         }
+
         .nav-link {
             color: #888;
             padding: 10px 12px;
@@ -39,24 +47,40 @@
             margin-bottom: 4px;
             transition: all 0.2s;
         }
-        .nav-link:hover { color: white; background: #222; }
-        .nav-link.active { color: white; background: #333; }
-        .nav-divider { border-top: 1px solid #333; margin: 16px 0; }
+
+        .nav-link:hover {
+            color: white;
+            background: #222;
+        }
+
+        .nav-link.active {
+            color: white;
+            background: #333;
+        }
+
+        .nav-divider {
+            border-top: 1px solid #333;
+            margin: 16px 0;
+        }
+
         .main-content {
             margin-left: 220px;
             padding: 32px;
         }
+
         .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
         }
+
         .page-title {
             font-size: 24px;
             font-weight: 600;
             color: #111;
         }
+
         .btn-new {
             background: #111;
             color: white;
@@ -67,7 +91,12 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .btn-new:hover { background: #333; color: white; }
+
+        .btn-new:hover {
+            background: #333;
+            color: white;
+        }
+
         .alert {
             border: none;
             border-radius: 6px;
@@ -75,18 +104,29 @@
             padding: 12px 16px;
             margin-bottom: 20px;
         }
-        .alert-success { background: #f0fdf4; color: #166534; }
-        .alert-danger { background: #fef2f2; color: #991b1b; }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: #166534;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
         .table-container {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
+
         .table {
             margin: 0;
             font-size: 14px;
         }
+
         .table thead th {
             background: #fafafa;
             border-bottom: 1px solid #eee;
@@ -94,21 +134,38 @@
             color: #666;
             padding: 14px 16px;
         }
+
         .table tbody td {
             padding: 14px 16px;
             border-bottom: 1px solid #f0f0f0;
             vertical-align: middle;
         }
-        .table tbody tr:last-child td { border-bottom: none; }
-        .table tbody tr:hover { background: #fafafa; }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tbody tr:hover {
+            background: #fafafa;
+        }
+
         .badge {
             font-weight: 500;
             padding: 4px 10px;
             border-radius: 4px;
             font-size: 12px;
         }
-        .badge-info { background: #dbeafe; color: #1e40af; }
-        .badge-primary { background: #111; color: white; }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-primary {
+            background: #111;
+            color: white;
+        }
+
         .btn-icon {
             border: none;
             background: transparent;
@@ -120,37 +177,51 @@
             display: inline-block;
             cursor: pointer;
         }
-        .btn-icon:hover { background: #f0f0f0; color: #111; }
-        .btn-icon.danger:hover { background: #fef2f2; color: #991b1b; }
-        
+
+        .btn-icon:hover {
+            background: #f0f0f0;
+            color: #111;
+        }
+
+        .btn-icon.danger:hover {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
         /* Modal Styles */
         .modal-content {
             border: none;
             border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
         }
+
         .modal-header {
             border-bottom: 1px solid #eee;
             padding: 20px 24px;
         }
+
         .modal-title {
             font-size: 18px;
             font-weight: 600;
             color: #111;
         }
+
         .modal-body {
             padding: 24px;
         }
+
         .modal-footer {
             border-top: 1px solid #eee;
             padding: 16px 24px;
         }
+
         .form-label {
             font-size: 14px;
             font-weight: 500;
             color: #333;
             margin-bottom: 6px;
         }
+
         .form-control {
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -158,10 +229,12 @@
             font-size: 14px;
             transition: border-color 0.2s;
         }
+
         .form-control:focus {
             border-color: #111;
             box-shadow: none;
         }
+
         .btn-cancel {
             background: #f5f5f5;
             color: #333;
@@ -170,7 +243,11 @@
             padding: 10px 20px;
             font-size: 14px;
         }
-        .btn-cancel:hover { background: #e5e5e5; }
+
+        .btn-cancel:hover {
+            background: #e5e5e5;
+        }
+
         .btn-submit {
             background: #111;
             color: white;
@@ -179,36 +256,58 @@
             padding: 10px 20px;
             font-size: 14px;
         }
-        .btn-submit:hover { background: #333; }
-        .btn-close { opacity: 0.5; }
-        .btn-close:hover { opacity: 1; }
-        
+
+        .btn-submit:hover {
+            background: #333;
+        }
+
+        .btn-close {
+            opacity: 0.5;
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
         /* Detail Styles for View Modal */
         .detail-row {
             display: flex;
             padding: 12px 0;
             border-bottom: 1px solid #f0f0f0;
         }
-        .detail-row:last-child { border-bottom: none; }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
         .detail-label {
             width: 100px;
             font-size: 14px;
             color: #666;
             font-weight: 500;
         }
+
         .detail-value {
             flex: 1;
             font-size: 14px;
             color: #111;
         }
+
         .descripcion-limitada {
-            display: -webkit-box;           /* Necesario para el efecto */
-            -webkit-line-clamp: 2;          /* Número máximo de líneas */
-            -webkit-box-orient: vertical;   /* Orientación vertical */
-            overflow: hidden;               /* Oculta el resto del texto */
-            text-overflow: ellipsis;        /* Añade los puntos suspensivos (...) */
-            max-width: 600px;               /* (Opcional) Evita que la columna sea eterna */
-            white-space: normal;            /* Permite que el texto salte de línea */
+            display: -webkit-box;
+            /* Necesario para el efecto */
+            -webkit-line-clamp: 2;
+            /* Número máximo de líneas */
+            -webkit-box-orient: vertical;
+            /* Orientación vertical */
+            overflow: hidden;
+            /* Oculta el resto del texto */
+            text-overflow: ellipsis;
+            /* Añade los puntos suspensivos (...) */
+            max-width: 600px;
+            /* (Opcional) Evita que la columna sea eterna */
+            white-space: normal;
+            /* Permite que el texto salte de línea */
         }
     </style>
 </head>
@@ -228,7 +327,17 @@
     <div class="main-content">
         <div class="page-header">
             <h1 class="page-title">Cursos</h1>
-            <button class="btn-new" data-bs-toggle="modal" data-bs-target="#modalNuevo">Nuevo Curso <i class="bi bi-plus-circle" style="padding-left: 5px;"></i></button>
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <div class="input-group" style="width: 260px;">
+                    <span class="input-group-text" style="background: #f3f4f6; border: 1px solid #ddd;"><i
+                            class="bi bi-search"></i></span>
+                    <input type="text" id="buscadorCursoNombre" class="form-control" placeholder="Buscar por nombre..."
+                        style="border: 1px solid #ddd;">
+                </div>
+                <button class="btn-new" data-bs-toggle="modal" data-bs-target="#modalNuevo">Nuevo Curso <i
+                        class="bi bi-plus-circle" style="padding-left: 5px;"></i></button>
+            </div>
+
         </div>
 
         <div th:if="${mensaje}" class="alert alert-success">
@@ -256,33 +365,26 @@
                         <td><span class="badge badge-info" th:text="${curso.codigo}"></span></td>
                         <td th:text="${curso.nombre}"></td>
                         <td>
-                            <div class="descripcion-limitada"
-                                 th:text="${curso.descripcion ?: 'Sin descripción'}"
-                                 th:title="${curso.descripcion}">
+                            <div class="descripcion-limitada" th:text="${curso.descripcion ?: 'Sin descripción'}"
+                                th:title="${curso.descripcion}">
                             </div>
                         </td>
                         <td><span class="badge badge-primary" th:text="${curso.totalAlumnos}"></span></td>
                         <td>
-                            <button class="btn-icon" title="Editar"
-                                    th:data-id="${curso.id}"
-                                    th:data-codigo="${curso.codigo}"
-                                    th:data-nombre="${curso.nombre}"
-                                    th:data-descripcion="${curso.descripcion}"
-                                    onclick="abrirModalEditar(this)"><i class="bi bi-pencil-square"></i></button>
-                            <button class="btn-icon danger" title="Eliminar"
-                                    th:data-id="${curso.id}"
-                                    th:data-nombre="${curso.nombre}"
-                                    onclick="abrirModalEliminar(this)"><i class="bi bi-trash-fill"></i></button>
-                            <button class="btn-icon" title="Mostrar Alumnos"
-                                    th:data-id="${curso.id}"
-                                    th:data-codigo="${curso.codigo}"
-                                    th:data-nombre="${curso.nombre}"
-                                    th:data-descripcion="${curso.descripcion}"
-                                    onclick="abrirModalMostrarAlumnos(this)"><i class="bi bi-people-fill"></i></button>
-                            <button class="btn-icon" title="Asignar Alumnos"
-                                    th:data-id="${curso.id}"
-                                    th:data-nombre="${curso.nombre}"
-                                    onclick="abrirModalAsignar(this)" style="color: #166534;"><i class="bi bi-person-fill-add"></i></button>
+                            <button class="btn-icon" title="Editar" th:data-id="${curso.id}"
+                                th:data-codigo="${curso.codigo}" th:data-nombre="${curso.nombre}"
+                                th:data-descripcion="${curso.descripcion}" onclick="abrirModalEditar(this)"><i
+                                    class="bi bi-pencil-square"></i></button>
+                            <button class="btn-icon danger" title="Eliminar" th:data-id="${curso.id}"
+                                th:data-nombre="${curso.nombre}" onclick="abrirModalEliminar(this)"><i
+                                    class="bi bi-trash-fill"></i></button>
+                            <button class="btn-icon" title="Mostrar Alumnos" th:data-id="${curso.id}"
+                                th:data-codigo="${curso.codigo}" th:data-nombre="${curso.nombre}"
+                                th:data-descripcion="${curso.descripcion}" onclick="abrirModalMostrarAlumnos(this)"><i
+                                    class="bi bi-people-fill"></i></button>
+                            <button class="btn-icon" title="Asignar Alumnos" th:data-id="${curso.id}"
+                                th:data-nombre="${curso.nombre}" onclick="abrirModalAsignar(this)"
+                                style="color: #166534;"><i class="bi bi-person-fill-add"></i></button>
                         </td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(cursos)}">
@@ -307,7 +409,8 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Código *</label>
-                            <input type="text" class="form-control" name="codigo" required maxlength="4" placeholder="Ej: B01">
+                            <input type="text" class="form-control" name="codigo" required maxlength="4"
+                                placeholder="Ej: B01">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Nombre *</label>
@@ -343,11 +446,13 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Nombre *</label>
-                            <input type="text" class="form-control" id="editNombre" name="nombre" required maxlength="100">
+                            <input type="text" class="form-control" id="editNombre" name="nombre" required
+                                maxlength="100">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Descripción</label>
-                            <textarea class="form-control" id="editDescripcion" name="descripcion" rows="3" maxlength="255"></textarea>
+                            <textarea class="form-control" id="editDescripcion" name="descripcion" rows="3"
+                                maxlength="255"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -369,7 +474,7 @@
                 </div>
                 <div class="modal-body text-center py-4">
                     <div class="mx-auto d-flex align-items-center justify-content-center rounded-circle bg-danger-subtle mb-4"
-                         style="width: 80px; height: 80px;">
+                        style="width: 80px; height: 80px;">
                         <i class="bi bi-exclamation-triangle text-danger" style="font-size: 40px;"></i>
                     </div>
 
@@ -380,63 +485,69 @@
                 </div>
                 <div class="modal-footer" style="justify-content: center;">
                     <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                    <a id="btnConfirmarEliminar" href="#" class="btn-submit" style="background: #dc3545; text-decoration: none;">Eliminar</a>
+                    <a id="btnConfirmarEliminar" href="#" class="btn-submit"
+                        style="background: #dc3545; text-decoration: none;">Eliminar</a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modal Asignar Alumnos -->
-        <div class="modal fade" id="modalAsignar" tabindex="-1">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Asignar Alumnos a: <span id="asignarCursoNombre" style="font-weight: bold;"></span></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-4">
-                            <h6 style="font-size: 14px; color: #666; margin-bottom: 12px;">Alumnos Disponibles (sin curso asignado)</h6>
-                            <div id="alertNoAlumnos" class="alert alert-warning text-center" style="display:none;">No hay alumnos disponibles para asignar</div>
-                            <form th:if="${!#lists.isEmpty(alumnosDisponibles)}" id="formAsignar" method="post">
-                                <div class="table-container" style="max-height: 300px; overflow-y: auto;">
-                                    <table class="table" style="margin: 0;">
-                                        <thead style="position: sticky; top: 0; background: #fafafa;">
-                                            <tr>
-                                                <th style="width: 50px;"></th>
-                                                <th>Cédula</th>
-                                                <th>Nombre</th>
-                                                <th>Apellido</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr th:each="alumno : ${alumnosDisponibles}">
-                                                <td>
-                                                    <input type="radio" name="cedula" th:value="${alumno.cedula}" class="form-check-input" required>
-                                                </td>
-                                                <td th:text="${alumno.cedula}"></td>
-                                                <td th:text="${alumno.nombre}"></td>
-                                                <td th:text="${alumno.apellido}"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn-submit">Asignar</button>
-                                </div>
-                            </form>
-                        </div>
+    <div class="modal fade" id="modalAsignar" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Asignar Alumnos a: <span id="asignarCursoNombre"
+                            style="font-weight: bold;"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <h6 style="font-size: 14px; color: #666; margin-bottom: 12px;">Alumnos Disponibles (sin curso
+                            asignado)</h6>
+                        <div id="alertNoAlumnos" class="alert alert-warning text-center" style="display:none;">No hay
+                            alumnos disponibles para asignar</div>
+                        <form th:if="${!#lists.isEmpty(alumnosDisponibles)}" id="formAsignar" method="post">
+                            <div class="table-container" style="max-height: 300px; overflow-y: auto;">
+                                <table class="table" style="margin: 0;">
+                                    <thead style="position: sticky; top: 0; background: #fafafa;">
+                                        <tr>
+                                            <th style="width: 50px;"></th>
+                                            <th>Cédula</th>
+                                            <th>Nombre</th>
+                                            <th>Apellido</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="alumno : ${alumnosDisponibles}">
+                                            <td>
+                                                <input type="radio" name="cedula" th:value="${alumno.cedula}"
+                                                    class="form-check-input" required>
+                                            </td>
+                                            <td th:text="${alumno.cedula}"></td>
+                                            <td th:text="${alumno.nombre}"></td>
+                                            <td th:text="${alumno.apellido}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn-submit">Asignar</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
     <div class="modal fade" id="modalVerAlumnos" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Alumnos en: <span id="verCursoNombre" style="font-weight: bold;"></span></h5>
+                    <h5 class="modal-title">Alumnos en: <span id="verCursoNombre" style="font-weight: bold;"></span>
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -450,14 +561,15 @@
                         Este curso no tiene alumnos inscritos.
                     </div>
 
-                    <div id="tablaAlumnosContainer" class="table-container" style="display: none; max-height: 400px; overflow-y: auto;">
+                    <div id="tablaAlumnosContainer" class="table-container"
+                        style="display: none; max-height: 400px; overflow-y: auto;">
                         <table class="table">
                             <thead style="position: sticky; top: 0; background: #fafafa;">
-                            <tr>
-                                <th>Cédula</th>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                            </tr>
+                                <tr>
+                                    <th>Cédula</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                </tr>
                             </thead>
                             <tbody id="listaAlumnosBody">
                             </tbody>
@@ -483,19 +595,19 @@
             document.getElementById('editCodigo').value = codigo;
             document.getElementById('editNombre').value = nombre;
             document.getElementById('editDescripcion').value = descripcion || '';
-            
+
             document.getElementById('formEditar').action = '/cursos/editar/' + id;
-            
+
             new bootstrap.Modal(document.getElementById('modalEditar')).show();
         }
 
         function abrirModalEliminar(btn) {
             const id = btn.dataset.id;
             const nombre = btn.dataset.nombre;
-            
+
             document.getElementById('eliminarNombre').textContent = nombre;
             document.getElementById('btnConfirmarEliminar').href = '/cursos/eliminar/' + id;
-            
+
             new bootstrap.Modal(document.getElementById('modalEliminar')).show();
         }
 
@@ -571,6 +683,25 @@
                 }
             }
         }
+
+        // Buscador por nombre de curso
+        document.addEventListener('DOMContentLoaded', function () {
+            const buscador = document.getElementById('buscadorCursoNombre');
+            const tabla = document.querySelector('.table tbody');
+            buscador.addEventListener('input', function () {
+                const filtro = buscador.value.trim().toLowerCase();
+                tabla.querySelectorAll('tr').forEach(function (row) {
+                    const nombreCell = row.querySelectorAll('td')[2];
+                    if (!nombreCell) return;
+                    const nombre = nombreCell.textContent.trim().toLowerCase();
+                    if (filtro === '' || nombre.includes(filtro)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
     </script>
 </body>
 
