@@ -321,6 +321,29 @@
             font-size: 13px;
             margin-top: 5px;
         }
+/* --- ESTILOS FORZADOS PARA CHECKBOX NEGRO --- */
+        
+        /* 1. Estado Marcado (Checked) */
+        .form-check-input:checked {
+            background-color: #111 !important;
+            border-color: #111 !important;
+            /* Icono de palomita blanca */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
+        }
+
+        /* 2. Estado Indeterminado (El "Seleccionar todos" con la rayita) */
+        .form-check-input:indeterminate {
+            background-color: #111 !important;
+            border-color: #111 !important;
+            /* Icono de rayita blanca (dash) */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10h8'/%3e%3c/svg%3e") !important;
+        }
+
+        /* 3. Estado Foco (Al hacer clic) - Sombra gris oscura en vez de azul */
+        .form-check-input:focus {
+            border-color: #111 !important;
+            box-shadow: 0 0 0 0.25rem rgba(17, 17, 17, 0.25) !important;
+        }
     </style>
 </head>
 
@@ -533,11 +556,14 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-4">
-                        <h6 style="font-size: 14px; color: #666; margin-bottom: 12px;">Alumnos Disponibles (sin curso
-                            asignado)</h6>
+                        <h6 style="font-size: 14px; color: #666; margin-bottom: 12px;">Selecciona uno o más alumnos disponibles (sin curso asignado)</h6>
                         <div id="alertNoAlumnos" class="alert alert-warning text-center" style="display:none;">No hay
                             alumnos disponibles para asignar</div>
                         <form th:if="${!#lists.isEmpty(alumnosDisponibles)}" id="formAsignar" method="post">
+                            <div style="margin-bottom: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="selectAllAlumnos" class="form-check-input" style="margin: 0;">
+                                <label for="selectAllAlumnos" style="margin: 0; font-size: 13px; color: #666; cursor: pointer;">Seleccionar todos</label>
+                            </div>
                             <div class="table-container" style="max-height: 300px; overflow-y: auto;">
                                 <table class="table" style="margin: 0;">
                                     <thead style="position: sticky; top: 0; background: #fafafa;">
@@ -551,8 +577,8 @@
                                     <tbody>
                                         <tr th:each="alumno : ${alumnosDisponibles}">
                                             <td>
-                                                <input type="radio" name="cedula" th:value="${alumno.cedula}"
-                                                    class="form-check-input" required>
+                                                <input type="checkbox" name="cedulas" th:value="${alumno.cedula}"
+                                                    class="form-check-input alumno-checkbox">
                                             </td>
                                             <td th:text="${alumno.cedula}"></td>
                                             <td th:text="${alumno.nombre}"></td>
@@ -563,7 +589,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn-submit">Asignar</button>
+                                <button type="submit" class="btn-submit">Asignar Seleccionados</button>
                             </div>
                         </form>
                     </div>
@@ -755,6 +781,39 @@
                     mensajeNoResultados.style.display = 'none';
                 }
             });
+        });
+
+        // Funcionalidad para seleccionar/deseleccionar todos los alumnos
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectAllCheckbox = document.getElementById('selectAllAlumnos');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function () {
+                    const alumnoCheckboxes = document.querySelectorAll('.alumno-checkbox');
+                    alumnoCheckboxes.forEach(checkbox => {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                });
+
+                // Actualizar el estado del "seleccionar todos" cuando se cambian checkboxes individuales
+                const alumnoCheckboxes = document.querySelectorAll('.alumno-checkbox');
+                alumnoCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function () {
+                        const allChecked = Array.from(alumnoCheckboxes).every(cb => cb.checked);
+                        const noneChecked = Array.from(alumnoCheckboxes).every(cb => !cb.checked);
+                        
+                        if (allChecked) {
+                            selectAllCheckbox.checked = true;
+                            selectAllCheckbox.indeterminate = false;
+                        } else if (noneChecked) {
+                            selectAllCheckbox.checked = false;
+                            selectAllCheckbox.indeterminate = false;
+                        } else {
+                            selectAllCheckbox.checked = false;
+                            selectAllCheckbox.indeterminate = true;
+                        }
+                    });
+                });
+            }
         });
     </script>
 </body>

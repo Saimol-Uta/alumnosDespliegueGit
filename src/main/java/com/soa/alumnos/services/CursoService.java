@@ -86,6 +86,28 @@ public class CursoService {
     }
 
     @Transactional
+    public int asignarAlumnos(Long cursoId, List<String> cedulas) {
+        Curso curso = porId(cursoId);
+        int asignados = 0;
+        
+        for (String cedula : cedulas) {
+            try {
+                Alumno alumno = alumnoRepo.findById(cedula)
+                        .orElseThrow(() -> new EntityNotFoundException("Alumno no encontrado con cédula: " + cedula));
+                
+                alumno.setCurso(curso);
+                alumnoRepo.save(alumno);
+                asignados++;
+            } catch (EntityNotFoundException e) {
+                // Continuar con el siguiente alumno si uno no se encuentra
+                continue;
+            }
+        }
+        
+        return asignados;
+    }
+
+    @Transactional
     public AlumnoResponseDto desasignarAlumno(String cedulaAlumno) {
         Alumno alumno = alumnoRepo.findById(cedulaAlumno)
                 .orElseThrow(() -> new EntityNotFoundException("Alumno no encontrado con cédula: " + cedulaAlumno));

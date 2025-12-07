@@ -11,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 public class WebController {
 
@@ -274,11 +276,17 @@ public class WebController {
 
     @PostMapping("/cursos/{id}/asignar-alumno")
     public String asignarAlumnoACurso(@PathVariable Long id,
-            @RequestParam String cedula,
+            @RequestParam(required = false) List<String> cedulas,
             RedirectAttributes redirectAttributes) {
         try {
-            cursoService.asignarAlumno(id, cedula);
-            redirectAttributes.addFlashAttribute("mensaje", "Alumno asignado exitosamente");
+            if (cedulas == null || cedulas.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Debe seleccionar al menos un alumno");
+                return "redirect:/cursos";
+            }
+            int asignados = cursoService.asignarAlumnos(id, cedulas);
+            String mensaje = asignados == 1 ? "1 alumno asignado exitosamente" : 
+                            asignados + " alumnos asignados exitosamente";
+            redirectAttributes.addFlashAttribute("mensaje", mensaje);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
