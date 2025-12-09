@@ -11,7 +11,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
+            background: #f8f9fa;
             min-height: 100vh;
         }
         .sidebar {
@@ -44,79 +44,328 @@
         .nav-divider { border-top: 1px solid #333; margin: 16px 0; }
         .main-content {
             margin-left: 220px;
-            padding: 32px;
+            padding: 40px 48px;
+            min-height: 100vh;
         }
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
+        
+        /* Header mejorado con saludo */
+        .welcome-header {
+            margin-bottom: 40px;
         }
-        .page-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: #111;
+        .welcome-text {
+            font-size: 48px;
+            font-weight: 400;
+            color: #1a1a2e;
+            margin-bottom: 0;
         }
-        .user-info {
+        .welcome-text i {
+            color: #6a6a6a;
+            margin-right: 8px;
+        }
+        .date-text {
             font-size: 14px;
-            color: #666;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+        .date-text i {
+            font-size: 14px;
+        }
+        
+        /* Línea divisoria moderna */
+        .divider-line {
+            height: 3px;
+            background: linear-gradient(90deg, 
+                rgba(26, 26, 46, 0.15) 0%, 
+                rgba(26, 26, 46, 0.08) 50%, 
+                transparent 100%);
+            border-radius: 3px;
+            margin: 16px 0 20px 0;
+            max-width: 200px;
+            position: relative;
+        }
+        .divider-line::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 100%;
+            background: linear-gradient(90deg, #1a1a2e, #6a6a6a);
+            border-radius: 3px;
+        }
+        
+        /* Cards de estadísticas mejoradas */
         .stat-card {
             background: white;
-            border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            height: 100%; /* Para que tengan la misma altura */
+            border-radius: 10px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            height: 100%;
+            border-top: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+        .stat-card.alumnos {
+            border-top-color: #1a1a2e;
+        }
+        .stat-card.cursos {
+            border-top-color: #6a6a6a;
         }
         .stat-number {
-            font-size: 32px;
-            font-weight: 600;
-            color: #111;
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a2e;
             line-height: 1.2;
         }
         .stat-label {
-            font-size: 14px;
-            color: #666;
-            margin-top: 4px;
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 2px;
+            font-weight: 500;
         }
-        /* Estilos nuevos para la caja del icono */
+        .stat-sublabel {
+            font-size: 11px;
+            color: #adb5bd;
+            margin-top: 6px;
+        }
         .icon-box {
-            width: 56px; 
-            height: 56px;
+            width: 48px; 
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
+            border-radius: 10px;
+        }
+        .icon-box.alumnos {
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+            color: white;
+        }
+        .icon-box.cursos {
+            background: linear-gradient(135deg, #4a4a4a 0%, #6a6a6a 100%);
+            color: white;
         }
         
-        .action-card {
-            background: white;
-            border-radius: 8px;
-            padding: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        /* Badge informativo minimalista */
+        .info-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0;
+            background: rgba(26, 26, 46, 0.08);
+            border-radius: 50px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            max-width: 48px;
         }
-        .action-title {
-            font-size: 16px;
+        .info-badge:hover {
+            max-width: 320px;
+            gap: 12px;
+            background: rgba(26, 26, 46, 0.12);
+            padding: 12px 20px;
+        }
+        .info-badge-icon {
+            font-size: 22px;
+            color: rgba(26, 26, 46, 0.4);
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        .info-badge:hover .info-badge-icon {
+            color: rgba(26, 26, 46, 0.7);
+            transform: rotate(-10deg);
+        }
+        .info-badge-content {
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease 0.1s;
+        }
+        .info-badge:hover .info-badge-content {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .info-badge-title {
+            font-size: 13px;
             font-weight: 600;
-            color: #111;
-            margin-bottom: 16px;
+            color: rgba(26, 26, 46, 0.8);
+            margin-bottom: 2px;
         }
-        .btn-action {
-            background: #111;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 10px 16px;
+        .info-badge-text {
+            font-size: 11px;
+            color: rgba(26, 26, 46, 0.5);
+        }
+        
+        /* Sección central con animación y tip */
+        .content-section {
+            display: flex;
+            align-items: center;
+            gap: 48px;
+            margin-top: 48px;
+            padding: 36px 40px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .lottie-container {
+            flex-shrink: 0;
+            width: 160px;
+            height: 160px;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.08) 0%, rgba(106, 106, 106, 0.08) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .animated-icon {
+            font-size: 64px;
+            color: #1a1a2e;
+            animation: float 3s ease-in-out infinite;
+        }
+        .animated-icon-bg {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(26, 26, 46, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse-bg 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes pulse-bg {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.15); opacity: 0.8; }
+        }
+        .tip-section {
+            flex: 1;
+        }
+        .tip-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #1a1a2e;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.1) 0%, rgba(106, 106, 106, 0.1) 100%);
+            padding: 8px 14px;
+            border-radius: 25px;
+            margin-bottom: 20px;
+        }
+        .tip-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
+        }
+        .tip-text {
             font-size: 14px;
-            text-decoration: none;
-            display: inline-block;
-            margin-right: 8px;
-            margin-bottom: 8px;
-            transition: background 0.2s;
+            color: #6c757d;
+            line-height: 1.6;
+            max-width: 400px;
         }
-        .btn-action:hover { background: #333; color: white; }
-        .btn-action.secondary { background: #f5f5f5; color: #111; }
-        .btn-action.secondary:hover { background: #e5e5e5; }
+        .tip-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #adb5bd;
+        }
+        .tip-dot {
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #1a1a2e, #6a6a6a);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        /* Logo decorativo en esquina */
+        .corner-logo {
+            position: fixed;
+            right: 120px;
+            bottom: 120px;
+            font-size: 160px;
+            color: #1a1a2e;
+            opacity: 0.05;
+            z-index: 0;
+            pointer-events: none;
+            transform: rotate(-8deg);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .welcome-text {
+                font-size: 36px;
+            }
+            .content-section {
+                flex-direction: column;
+                gap: 24px;
+                text-align: center;
+            }
+            .tip-section {
+                text-align: center;
+            }
+            .tip-text {
+                max-width: 100%;
+            }
+            .corner-logo {
+                font-size: 120px;
+                right: 40px;
+                bottom: 40px;
+            }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 24px;
+            }
+            .welcome-text {
+                font-size: 28px;
+            }
+            .stat-card {
+                margin-bottom: 16px;
+            }
+            .corner-logo {
+                font-size: 80px;
+                right: 10px;
+                bottom: 10px;
+            }
+            .lottie-container {
+                width: 120px;
+                height: 120px;
+            }
+            .animated-icon {
+                font-size: 48px;
+            }
+        }
+        @media (max-height: 600px) {
+            .corner-logo {
+                font-size: 80px;
+                bottom: 10px;
+            }
+        }
     </style>
 </head>
 
@@ -133,44 +382,100 @@
     </div>
 
     <div class="main-content">
-        <div class="page-header">
-            <h1 class="page-title">Dashboard</h1>
-            <span class="user-info" sec:authentication="name">Usuario</span>
+        <!-- Header con saludo personalizado -->
+        <div class="welcome-header">
+            <h1 class="welcome-text">
+                <i class="bi bi-hand-wave"></i>¡Bienvenido, <span sec:authentication="name">Usuario</span>!
+            </h1>
+            <div class="divider-line"></div>
+            <div class="date-text">
+                <i class="bi bi-calendar3"></i>
+                <span id="currentDate"></span>
+            </div>
         </div>
 
-        <div class="row g-4 mb-4">
-            
-            <div class="col-md-6 col-lg-4"> 
-                <div class="stat-card">
+        <!-- Cards de estadísticas -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4 col-lg-3"> 
+                <div class="stat-card alumnos">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="stat-number" th:text="${totalAlumnos}">0</div>
                             <div class="stat-label">Total Alumnos</div>
+                            <div class="stat-sublabel">Registrados en el sistema</div>
                         </div>
-                        <div class="icon-box bg-dark text-white">
-                            <i class="bi bi-mortarboard-fill" style="font-size: 28px;"></i>
+                        <div class="icon-box alumnos">
+                            <i class="bi bi-mortarboard-fill" style="font-size: 22px;"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4" sec:authorize="hasRole('ADMIN')">
-                <div class="stat-card">
+            <div class="col-md-4 col-lg-3" sec:authorize="hasRole('ADMIN')">
+                <div class="stat-card cursos">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="stat-number" th:text="${totalCursos}">0</div>
                             <div class="stat-label">Total Cursos</div>
+                            <div class="stat-sublabel">Disponibles actualmente</div>
                         </div>
-                        <div class="icon-box bg-secondary-subtle text-dark">
-                            <i class="bi bi-journal-bookmark-fill" style="font-size: 26px;"></i>
+                        <div class="icon-box cursos">
+                            <i class="bi bi-journal-bookmark-fill" style="font-size: 20px;"></i>
                         </div>
                     </div>
                 </div>
             </div>
-            
+        </div>
+
+        <!-- Sección central: Animación + Tip del día -->
+        <div class="content-section">
+            <div class="lottie-container">
+                <div class="animated-icon-bg"></div>
+                <i class="bi bi-book-half animated-icon"></i>
+            </div>
+            <div class="tip-section">
+                <div class="tip-label">
+                    <i class="bi bi-lightbulb-fill"></i>
+                    Tip del día
+                </div>
+                <div class="tip-title">Mantén tus registros actualizados</div>
+                <div class="tip-text">
+                    Un sistema organizado facilita la gestión académica. Verifica periódicamente 
+                    la información de alumnos y cursos para mantener todo al día.
+                </div>
+                <div class="tip-footer">
+                    <div class="tip-dot"></div>
+                    <span>Sistema activo</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Badge informativo -->
+        <div style="position: fixed; top: 32px; right: 40px;">
+            <div class="info-badge">
+                <i class="bi bi-info-circle-fill info-badge-icon"></i>
+                <div class="info-badge-content">
+                    <div class="info-badge-title">Sistema de Gestión Académica</div>
+                    <div class="info-badge-text">Administra alumnos y cursos</div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Logo decorativo en esquina inferior derecha -->
+    <div class="corner-logo">
+        <i class="bi bi-mortarboard"></i>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mostrar fecha actual formateada
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const today = new Date();
+        let dateStr = today.toLocaleDateString('es-ES', options);
+        // Capitalizar primera letra
+        dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        document.getElementById('currentDate').textContent = dateStr;
+    </script>
 </body>
 </html>

@@ -315,6 +315,33 @@
             font-size: 14px;
             color: #111;
         }
+        
+        /* Logo decorativo en esquina */
+        .corner-logo {
+            position: fixed;
+            right: 20px;
+            bottom: -20px;
+            font-size: 160px;
+            color: #1a1a2e;
+            opacity: 0.05;
+            z-index: -1;
+            pointer-events: none;
+            transform: rotate(-8deg);
+        }
+        
+        /* Ocultar en pantallas pequeñas o cuando hay mucho contenido */
+        @media (max-height: 600px) {
+            .corner-logo {
+                display: none;
+            }
+        }
+        @media (max-width: 768px) {
+            .corner-logo {
+                font-size: 100px;
+                right: 10px;
+                bottom: -10px;
+            }
+        }
     </style>
 </head>
 
@@ -643,6 +670,11 @@
             });
         });
     </script>
+
+    <!-- Logo decorativo en esquina inferior derecha -->
+    <div class="corner-logo">
+        <i class="bi bi-mortarboard"></i>
+    </div>
 </body>
 
 </html>
