@@ -782,96 +782,105 @@
         }
 
         // Buscador por código usando la API
-        document.addEventListener('DOMContentLoaded', function () {
-            const buscador = document.getElementById('buscadorCursoNombre');
-            const tablaBody = document.querySelector('.table tbody');
-            const mensajeNoResultados = document.getElementById('filaNoCoincidencias');
-            
-            // Guardar las filas originales para restaurarlas
-            const filasOriginales = tablaBody.innerHTML;
-            
-            let timeoutId = null;
+// javascript
+document.addEventListener('DOMContentLoaded', function () {
+    const buscador = document.getElementById('buscadorCursoNombre');
+    const tablaBody = document.querySelector('.table tbody');
 
-            buscador.addEventListener('input', function () {
-                const filtro = buscador.value.trim();
-                
-                // Cancelar búsqueda anterior si existe
-                if (timeoutId) clearTimeout(timeoutId);
-                
-                // Si el filtro está vacío, restaurar filas originales
-                if (filtro === '') {
-                    tablaBody.innerHTML = filasOriginales;
-                    mensajeNoResultados.style.display = 'none';
-                    return;
-                }
-                
-                // Debounce: esperar 300ms antes de buscar
-                timeoutId = setTimeout(function() {
-                    fetch('/api/cursos/buscar?codigo=' + encodeURIComponent(filtro))
-                        .then(response => {
-                            if (!response.ok) throw new Error('Error en la búsqueda');
-                            return response.json();
-                        })
-                        .then(cursos => {
-                            // Limpiar tabla excepto mensaje de no resultados
-                            const filas = tablaBody.querySelectorAll('tr:not(#filaNoCoincidencias)');
-                            filas.forEach(fila => fila.remove());
-                            
-                            if (cursos.length === 0) {
-                                mensajeNoResultados.style.display = '';
+    // Guardar las filas originales para restaurarlas
+    const filasOriginales = tablaBody.innerHTML;
+
+    let timeoutId = null;
+
+    buscador.addEventListener('input', function () {
+        const filtro = buscador.value.trim();
+
+        if (timeoutId) clearTimeout(timeoutId);
+
+        // Si el filtro está vacío, restaurar filas originales y actualizar referencia
+        if (filtro === '') {
+            tablaBody.innerHTML = filasOriginales;
+            // Re-obtener y ocultar la fila de "no coincidencias" (fue recreada)
+            const mensajeNoResultados = tablaBody.querySelector('#filaNoCoincidencias');
+            if (mensajeNoResultados) mensajeNoResultados.style.display = 'none';
+            return;
+        }
+
+        timeoutId = setTimeout(function() {
+            fetch('/api/cursos/buscar?codigo=' + encodeURIComponent(filtro))
+                .then(response => {
+                    if (!response.ok) throw new Error('Error en la búsqueda');
+                    return response.json();
+                })
+                .then(cursos => {
+                    // Re-obtener la fila de no coincidencias después de cualquier cambio de innerHTML
+                    let mensajeNoResultados = tablaBody.querySelector('#filaNoCoincidencias');
+
+                    // Limpiar tabla excepto mensaje de no resultados
+                    const filas = tablaBody.querySelectorAll('tr:not(#filaNoCoincidencias)');
+                    filas.forEach(fila => fila.remove());
+
+                    if (cursos.length === 0) {
+                        if (mensajeNoResultados) mensajeNoResultados.style.display = '';
+                    } else {
+                        if (mensajeNoResultados) mensajeNoResultados.style.display = 'none';
+
+                        cursos.forEach(curso => {
+                            const descripcion = curso.descripcion || 'Sin descripción';
+
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${curso.id}</td>
+                                <td><span>${curso.codigo}</span></td>
+                                <td>${curso.nombre}</td>
+                                <td>
+                                    <div class="descripcion-limitada" title="${descripcion}">
+                                        ${descripcion}
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-primary">${curso.totalAlumnos}</span></td>
+                                <td>
+                                    <button class="btn-icon" title="Editar"
+                                            data-id="${curso.id}"
+                                            data-codigo="${curso.codigo}"
+                                            data-nombre="${curso.nombre}"
+                                            data-descripcion="${curso.descripcion || ''}"
+                                            onclick="abrirModalEditar(this)"><i class="bi bi-pencil-square"></i></button>
+                                    <button class="btn-icon danger" title="Eliminar"
+                                            data-id="${curso.id}"
+                                            data-nombre="${curso.nombre}"
+                                            data-alumnos="${curso.totalAlumnos}"
+                                            onclick="abrirModalEliminar(this)"><i class="bi bi-trash-fill"></i></button>
+                                    <button class="btn-icon" title="Mostrar Alumnos"
+                                            data-id="${curso.id}"
+                                            data-codigo="${curso.codigo}"
+                                            data-nombre="${curso.nombre}"
+                                            data-descripcion="${curso.descripcion || ''}"
+                                            onclick="abrirModalMostrarAlumnos(this)"><i class="bi bi-people-fill"></i></button>
+                                    <button class="btn-icon" title="Asignar Alumnos"
+                                            data-id="${curso.id}"
+                                            data-nombre="${curso.nombre}"
+                                            onclick="abrirModalAsignar(this)"
+                                            style="color: #166534;"><i class="bi bi-person-fill-add"></i></button>
+                                </td>
+                            `;
+
+                            // Re-obtener referencia antes de insertar (puede haber sido recreada)
+                            const ref = tablaBody.querySelector('#filaNoCoincidencias');
+                            if (ref && ref.parentNode === tablaBody) {
+                                tablaBody.insertBefore(tr, ref);
                             } else {
-                                mensajeNoResultados.style.display = 'none';
-                                
-                                // Generar filas con los resultados
-                                cursos.forEach(curso => {
-                                    const descripcion = curso.descripcion || 'Sin descripción';
-                                    
-                                    const tr = document.createElement('tr');
-                                    tr.innerHTML = `
-                                        <td>${curso.id}</td>
-                                        <td><span>${curso.codigo}</span></td>
-                                        <td>${curso.nombre}</td>
-                                        <td>
-                                            <div class="descripcion-limitada" title="${descripcion}">
-                                                ${descripcion}
-                                            </div>
-                                        </td>
-                                        <td><span class="badge badge-primary">${curso.totalAlumnos}</span></td>
-                                        <td>
-                                            <button class="btn-icon" title="Editar" 
-                                                    data-id="${curso.id}"
-                                                    data-codigo="${curso.codigo}"
-                                                    data-nombre="${curso.nombre}"
-                                                    data-descripcion="${curso.descripcion || ''}"
-                                                    onclick="abrirModalEditar(this)"><i class="bi bi-pencil-square"></i></button>
-                                            <button class="btn-icon danger" title="Eliminar" 
-                                                    data-id="${curso.id}"
-                                                    data-nombre="${curso.nombre}"
-                                                    data-alumnos="${curso.totalAlumnos}"
-                                                    onclick="abrirModalEliminar(this)"><i class="bi bi-trash-fill"></i></button>
-                                            <button class="btn-icon" title="Mostrar Alumnos"
-                                                    data-id="${curso.id}"
-                                                    data-codigo="${curso.codigo}"
-                                                    data-nombre="${curso.nombre}"
-                                                    data-descripcion="${curso.descripcion || ''}"
-                                                    onclick="abrirModalMostrarAlumnos(this)"><i class="bi bi-people-fill"></i></button>
-                                            <button class="btn-icon" title="Asignar Alumnos"
-                                                    data-id="${curso.id}"
-                                                    data-nombre="${curso.nombre}"
-                                                    onclick="abrirModalAsignar(this)"
-                                                    style="color: #166534;"><i class="bi bi-person-fill-add"></i></button>
-                                        </td>
-                                    `;
-                                    tablaBody.insertBefore(tr, mensajeNoResultados);
-                                });
+                                tablaBody.appendChild(tr);
                             }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
                         });
-                }, 300);
-            });
-        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }, 300);
+    });
+});
 
         // Funcionalidad para seleccionar/deseleccionar todos los alumnos
         document.addEventListener('DOMContentLoaded', function () {
