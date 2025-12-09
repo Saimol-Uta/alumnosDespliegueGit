@@ -575,52 +575,35 @@
 
     <!-- Modal Asignar Alumnos -->
     <div class="modal fade" id="modalAsignar" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Asignar Alumnos a: <span id="asignarCursoNombre"
+                    <h5 class="modal-title">Asignar Alumno a: <span id="asignarCursoNombre"
                             style="font-weight: bold;"></span></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-4">
-                        <h6 style="font-size: 14px; color: #666; margin-bottom: 12px;">Selecciona uno o más alumnos disponibles (sin curso asignado)</h6>
-                        <div id="alertNoAlumnos" class="alert alert-warning text-center" style="display:none;">No hay
-                            alumnos disponibles para asignar</div>
-                        <form th:if="${!#lists.isEmpty(alumnosDisponibles)}" id="formAsignar" method="post">
-                            <div style="margin-bottom: 10px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; display: flex; align-items: center; gap: 8px;">
-                                <input type="checkbox" id="selectAllAlumnos" class="form-check-input" style="margin: 0;">
-                                <label for="selectAllAlumnos" style="margin: 0; font-size: 13px; color: #666; cursor: pointer;">Seleccionar todos</label>
-                            </div>
-                            <div class="table-container" style="max-height: 300px; overflow-y: auto;">
-                                <table class="table" style="margin: 0;">
-                                    <thead style="position: sticky; top: 0; background: #fafafa;">
-                                        <tr>
-                                            <th style="width: 50px;"></th>
-                                            <th>Cédula</th>
-                                            <th>Nombre</th>
-                                            <th>Apellido</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr th:each="alumno : ${alumnosDisponibles}">
-                                            <td>
-                                                <input type="checkbox" name="cedulas" th:value="${alumno.cedula}"
-                                                    class="form-check-input alumno-checkbox">
-                                            </td>
-                                            <td th:text="${alumno.cedula}"></td>
-                                            <td th:text="${alumno.nombre}"></td>
-                                            <td th:text="${alumno.apellido}"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn-submit">Asignar Seleccionados</button>
-                            </div>
-                        </form>
+                    <div class="mb-3">
+                        <label class="form-label">Ingrese la cédula del estudiante *</label>
+                        <input type="text" id="inputCedulaAsignar" class="form-control" 
+                               maxlength="10" placeholder="Ej: 1234567890"
+                               pattern="[0-9]{10}" title="La cédula debe tener 10 dígitos">
+                        <div id="alertAsignarError" class="alert alert-danger mt-3" style="display: none;">
+                            <i class="bi bi-exclamation-circle"></i> <span id="mensajeErrorAsignar"></span>
+                        </div>
+                        <div id="alertAsignarSuccess" class="alert alert-success mt-3" style="display: none;">
+                            <i class="bi bi-check-circle"></i> <span id="mensajeSuccessAsignar"></span>
+                        </div>
+                        <!-- Info del alumno encontrado -->
+                        <div id="infoAlumnoEncontrado" class="mt-3 p-3" style="display: none; background: #f8f9fa; border-radius: 6px;">
+                            <p class="mb-1"><strong>Alumno encontrado:</strong></p>
+                            <p class="mb-0" id="datosAlumnoEncontrado"></p>
+                        </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnAsignarAlumno" class="btn-submit" onclick="asignarAlumnoPorCedula()">Asignar</button>
                 </div>
             </div>
         </div>
@@ -763,22 +746,109 @@
                 });
         }
 
+        // Variable global para guardar el ID del curso actual
+        let cursoIdActual = null;
+
         function abrirModalAsignar(btn) {
             const id = btn.dataset.id;
             const nombre = btn.dataset.nombre;
+            
+            cursoIdActual = id;
             document.getElementById('asignarCursoNombre').textContent = nombre;
-            const formAsignar = document.getElementById('formAsignar');
-            const alertNoAlumnos = document.getElementById('alertNoAlumnos');
-            if (formAsignar) {
-                if (alertNoAlumnos) alertNoAlumnos.style.display = 'none';
-                formAsignar.action = '/cursos/' + id + '/asignar-alumno';
-                new bootstrap.Modal(document.getElementById('modalAsignar')).show();
-            } else {
-                if (alertNoAlumnos) {
-                    alertNoAlumnos.style.display = 'block';
-                    new bootstrap.Modal(document.getElementById('modalAsignar')).show();
-                }
+            
+            // Limpiar el formulario
+            document.getElementById('inputCedulaAsignar').value = '';
+            document.getElementById('alertAsignarError').style.display = 'none';
+            document.getElementById('alertAsignarSuccess').style.display = 'none';
+            document.getElementById('infoAlumnoEncontrado').style.display = 'none';
+            
+            new bootstrap.Modal(document.getElementById('modalAsignar')).show();
+        }
+
+        function asignarAlumnoPorCedula() {
+            const cedula = document.getElementById('inputCedulaAsignar').value.trim();
+            const alertError = document.getElementById('alertAsignarError');
+            const alertSuccess = document.getElementById('alertAsignarSuccess');
+            const mensajeError = document.getElementById('mensajeErrorAsignar');
+            const mensajeSuccess = document.getElementById('mensajeSuccessAsignar');
+            const infoAlumno = document.getElementById('infoAlumnoEncontrado');
+            
+            // Ocultar mensajes previos
+            alertError.style.display = 'none';
+            alertSuccess.style.display = 'none';
+            infoAlumno.style.display = 'none';
+            
+            // Validar que la cédula no esté vacía
+            if (!cedula) {
+                mensajeError.textContent = 'Por favor ingrese una cédula.';
+                alertError.style.display = 'block';
+                return;
             }
+            
+            // Validar formato de cédula (10 dígitos)
+            if (!/^[0-9]{10}$/.test(cedula)) {
+                mensajeError.textContent = 'La cédula debe contener exactamente 10 dígitos numéricos.';
+                alertError.style.display = 'block';
+                return;
+            }
+            
+            // Primero verificar si el alumno existe
+            fetch('/api/alumnos/' + cedula)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('ALUMNO_NO_EXISTE');
+                    }
+                    return response.json();
+                })
+                .then(alumno => {
+                    // Verificar si ya tiene un curso asignado
+                    if (alumno.curso && alumno.curso.id) {
+                        throw new Error('ALUMNO_YA_ASIGNADO|' + alumno.curso.nombre);
+                    }
+                    
+                    // Si existe y no tiene curso, proceder a asignar usando la API
+                    return fetch('/api/cursos/' + cursoIdActual + '/alumnos/' + cedula, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('ERROR_ASIGNAR');
+                    }
+                    return response.json();
+                })
+                .then(alumnoAsignado => {
+                    // Mostrar mensaje de éxito
+                    mensajeSuccess.textContent = `Alumno ${alumnoAsignado.nombre} ${alumnoAsignado.apellido} asignado exitosamente.`;
+                    alertSuccess.style.display = 'block';
+                    
+                    // Limpiar el input
+                    document.getElementById('inputCedulaAsignar').value = '';
+                    
+                    // Recargar la página después de 1.5 segundos para actualizar la tabla
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                })
+                .catch(error => {
+                    const errorMsg = error.message;
+                    
+                    if (errorMsg === 'ALUMNO_NO_EXISTE') {
+                        mensajeError.textContent = 'No existe un alumno con la cédula ingresada.';
+                    } else if (errorMsg.startsWith('ALUMNO_YA_ASIGNADO')) {
+                        const cursoNombre = errorMsg.split('|')[1];
+                        mensajeError.textContent = `Este alumno ya está asignado al curso "${cursoNombre}".`;
+                    } else if (errorMsg === 'ERROR_ASIGNAR') {
+                        mensajeError.textContent = 'Error al asignar el alumno. Intente nuevamente.';
+                    } else {
+                        mensajeError.textContent = 'Error de conexión. Intente nuevamente.';
+                    }
+                    
+                    alertError.style.display = 'block';
+                });
         }
 
         // Buscador por código usando la API
@@ -881,39 +951,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 300);
     });
 });
-
-        // Funcionalidad para seleccionar/deseleccionar todos los alumnos
-        document.addEventListener('DOMContentLoaded', function () {
-            const selectAllCheckbox = document.getElementById('selectAllAlumnos');
-            if (selectAllCheckbox) {
-                selectAllCheckbox.addEventListener('change', function () {
-                    const alumnoCheckboxes = document.querySelectorAll('.alumno-checkbox');
-                    alumnoCheckboxes.forEach(checkbox => {
-                        checkbox.checked = selectAllCheckbox.checked;
-                    });
-                });
-
-                // Actualizar el estado del "seleccionar todos" cuando se cambian checkboxes individuales
-                const alumnoCheckboxes = document.querySelectorAll('.alumno-checkbox');
-                alumnoCheckboxes.forEach(checkbox => {
-                    checkbox.addEventListener('change', function () {
-                        const allChecked = Array.from(alumnoCheckboxes).every(cb => cb.checked);
-                        const noneChecked = Array.from(alumnoCheckboxes).every(cb => !cb.checked);
-                        
-                        if (allChecked) {
-                            selectAllCheckbox.checked = true;
-                            selectAllCheckbox.indeterminate = false;
-                        } else if (noneChecked) {
-                            selectAllCheckbox.checked = false;
-                            selectAllCheckbox.indeterminate = false;
-                        } else {
-                            selectAllCheckbox.checked = false;
-                            selectAllCheckbox.indeterminate = true;
-                        }
-                    });
-                });
-            }
-        });
     </script>
 
     <!-- Logo decorativo en esquina inferior derecha -->
