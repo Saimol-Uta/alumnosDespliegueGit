@@ -610,43 +610,83 @@
             input.value = input.value.replace(/[^0-9]/g, '');
         }
 
-// Buscador por cédula (Lógica Actualizada)
+// Buscador por cédula usando la API
         document.addEventListener('DOMContentLoaded', function() {
             const buscador = document.getElementById('buscadorCedula');
             const tablaBody = document.querySelector('.table tbody');
             const mensajeNoResultados = document.getElementById('filaNoCoincidencias');
+            
+            // Guardar las filas originales para restaurarlas
+            const filasOriginales = tablaBody.innerHTML;
+            
+            let timeoutId = null;
 
             buscador.addEventListener('input', function() {
-                const filtro = buscador.value.trim().toLowerCase();
-                let alumnosVisibles = 0;
-
-                // Filtramos para ignorar mensajes de sistema
-                const filas = Array.from(tablaBody.querySelectorAll('tr')).filter(row => 
-                    row.id !== 'filaNoCoincidencias' && !row.innerText.includes('No hay alumnos registrados')
-                );
-
-                filas.forEach(function(row) {
-                    // La cédula es la primera columna (querySelector 'td' agarra el primero)
-                    const cedulaCell = row.querySelector('td'); 
-                    
-                    if (cedulaCell) {
-                        const cedula = cedulaCell.textContent.trim().toLowerCase();
-                        
-                        if (filtro === '' || cedula.includes(filtro)) {
-                            row.style.display = '';
-                            alumnosVisibles++;
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    }
-                });
-
-                // Mostrar mensaje si filtramos y no quedó nada
-                if (alumnosVisibles === 0 && filas.length > 0) {
-                    mensajeNoResultados.style.display = '';
-                } else {
+                const filtro = buscador.value.trim();
+                
+                // Cancelar búsqueda anterior si existe
+                if (timeoutId) clearTimeout(timeoutId);
+                
+                // Si el filtro está vacío, restaurar filas originales
+                if (filtro === '') {
+                    tablaBody.innerHTML = filasOriginales;
                     mensajeNoResultados.style.display = 'none';
+                    return;
                 }
+                
+                // Debounce: esperar 300ms antes de buscar
+                timeoutId = setTimeout(function() {
+                    fetch('/api/alumnos/buscar?cedula=' + encodeURIComponent(filtro))
+                        .then(response => {
+                            if (!response.ok) throw new Error('Error en la búsqueda');
+                            return response.json();
+                        })
+                        .then(alumnos => {
+                            // Limpiar tabla excepto mensaje de no resultados
+                            const filas = tablaBody.querySelectorAll('tr:not(#filaNoCoincidencias)');
+                            filas.forEach(fila => fila.remove());
+                            
+                            if (alumnos.length === 0) {
+                                mensajeNoResultados.style.display = '';
+                            } else {
+                                mensajeNoResultados.style.display = 'none';
+                                
+                                // Generar filas con los resultados
+                                alumnos.forEach(alumno => {
+                                    const cursoHtml = alumno.curso 
+                                        ? `<span class="badge badge-primary">${alumno.curso.nombre}</span>`
+                                        : `<span class="badge badge-secondary">Sin asignar</span>`;
+                                    
+                                    const tr = document.createElement('tr');
+                                    tr.innerHTML = `
+                                        <td>${alumno.cedula}</td>
+                                        <td>${alumno.nombre}</td>
+                                        <td>${alumno.apellido}</td>
+                                        <td>${alumno.telefono || ''}</td>
+                                        <td>${cursoHtml}</td>
+                                        <td>
+                                            <button class="btn-icon" title="Editar" 
+                                                    data-cedula="${alumno.cedula}"
+                                                    data-nombre="${alumno.nombre}"
+                                                    data-apellido="${alumno.apellido}"
+                                                    data-direccion="${alumno.direccion || ''}"
+                                                    data-telefono="${alumno.telefono || ''}"
+                                                    data-curso-id="${alumno.curso ? alumno.curso.id : ''}"
+                                                    onclick="abrirModalEditar(this)"><i class="bi bi-pencil-square"></i></button>
+                                            <button class="btn-icon danger" title="Eliminar" 
+                                                    data-cedula="${alumno.cedula}"
+                                                    data-nombre="${alumno.nombre} ${alumno.apellido}"
+                                                    onclick="abrirModalEliminar(this)"><i class="bi bi-trash-fill"></i></button>
+                                        </td>
+                                    `;
+                                    tablaBody.insertBefore(tr, mensajeNoResultados);
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }, 300);
             });
         });
     </script>

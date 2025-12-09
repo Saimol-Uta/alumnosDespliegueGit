@@ -31,6 +31,12 @@ public class CursoController {
         return service.porIdConAlumnos(id);
     }
 
+    // Buscar curso por código
+    @GetMapping("/buscar")
+    public List<CursoResponseDto> buscarPorCodigo(@RequestParam String codigo) {
+        return service.buscarPorCodigo(codigo);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Curso crear(@Valid @RequestBody CursoCreateDto dto) {

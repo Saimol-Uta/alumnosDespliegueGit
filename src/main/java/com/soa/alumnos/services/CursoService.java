@@ -124,4 +124,10 @@ public class CursoService {
                 .map(AlumnoResponseDto::fromEntity)
                 .toList();
     }
+
+    public List<CursoResponseDto> buscarPorCodigo(String codigo) {
+        return cursoRepo.findByCodigoContainingIgnoreCase(codigo).stream()
+                .map(CursoResponseDto::fromEntity)
+                .toList();
+    }
 }
