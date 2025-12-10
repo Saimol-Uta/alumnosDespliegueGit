@@ -47,7 +47,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/registro", "/css/**", "/js/**", "/api/auth/**").permitAll()
+                        .requestMatchers("/", "/login", "/registro", "/css/**", "/js/**", "/api/auth/**", "/error", "/error/**").permitAll()
                         // Solo ADMIN puede acceder a cursos
                         .requestMatchers("/cursos/**", "/api/cursos/**").hasRole("ADMIN")
                         // ADMIN y SECRETARIA pueden acceder a alumnos
@@ -67,7 +67,9 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout=true")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .permitAll());
+                        .permitAll())
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/error/403"));
 
         return http.build();
     }

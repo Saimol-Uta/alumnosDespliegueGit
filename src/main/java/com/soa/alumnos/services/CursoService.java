@@ -136,4 +136,10 @@ public class CursoService {
                 .map(CursoResponseDto::fromEntity)
                 .toList();
     }
+
+    public List<CursoResponseDto> buscarPorNombre(String nombre) {
+        return cursoRepo.findByNombreContainingIgnoreCase(nombre).stream()
+                .map(CursoResponseDto::fromEntity)
+                .toList();
+    }
 }

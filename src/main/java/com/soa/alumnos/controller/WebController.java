@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -29,20 +30,38 @@ public class WebController {
     // ========== Páginas principales ==========
 
     @GetMapping("/")
-    public String index() {
+    public String index(Principal principal) {
+        // Si el usuario ya está logueado, redirigir al dashboard
+        if (principal != null) {
+            return "redirect:/dashboard";
+        }
         return "redirect:/login";
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(Principal principal) {
+        // Si el usuario ya está logueado, redirigir al dashboard
+        if (principal != null) {
+            return "redirect:/dashboard";
+        }
         return "login";
     }
 
     @GetMapping("/registro")
-    public String mostrarRegistro(Model model) {
+    public String mostrarRegistro(Model model, Principal principal) {
+        // Si el usuario ya está logueado, redirigir al dashboard
+        if (principal != null) {
+            return "redirect:/dashboard";
+        }
         model.addAttribute("usuario", new RegistroUsuarioDto("", "", "", ""));
         model.addAttribute("esPrimerUsuario", usuarioService.contarUsuarios() == 0);
         return "registro";
+    }
+
+    // Página de acceso denegado
+    @GetMapping("/error/403")
+    public String accesoDenegado() {
+        return "error/403";
     }
 
     @PostMapping("/registro")

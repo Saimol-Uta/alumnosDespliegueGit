@@ -389,11 +389,17 @@
     <div class="main-content">
         <div class="page-header">
             <h1 class="page-title">Cursos</h1>
-            <div style="display: flex; gap: 16px; align-items: center;">
-                <div class="input-group" style="width: 260px;">
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <div class="input-group" style="width: 220px;">
                     <span class="input-group-text" style="background: #f3f4f6; border: 1px solid #ddd;"><i
                             class="bi bi-search"></i></span>
-                    <input type="text" id="buscadorCursoNombre" class="form-control" maxlength="10" placeholder="Buscar por código..."
+                    <input type="text" id="buscadorCursoCodigo" class="form-control" maxlength="10" placeholder="Buscar por código..."
+                        style="border: 1px solid #ddd;">
+                </div>
+                <div class="input-group" style="width: 220px;">
+                    <span class="input-group-text" style="background: #f3f4f6; border: 1px solid #ddd;"><i
+                            class="bi bi-search"></i></span>
+                    <input type="text" id="buscadorCursoNombre" class="form-control" placeholder="Buscar por nombre..."
                         style="border: 1px solid #ddd;">
                 </div>
                 <button class="btn-new" data-bs-toggle="modal" data-bs-target="#modalNuevo">Nuevo Curso <i
@@ -855,10 +861,10 @@
                 });
         }
 
-        // Buscador por código usando la API
-// javascript
+        // Buscadores por código y nombre usando la API
 document.addEventListener('DOMContentLoaded', function () {
-    const buscador = document.getElementById('buscadorCursoNombre');
+    const buscadorCodigo = document.getElementById('buscadorCursoCodigo');
+    const buscadorNombre = document.getElementById('buscadorCursoNombre');
     const tablaBody = document.querySelector('.table tbody');
 
     // Guardar las filas originales para restaurarlas
@@ -866,22 +872,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let timeoutId = null;
 
-    buscador.addEventListener('input', function () {
-        const filtro = buscador.value.trim();
-
+    // Función para realizar la búsqueda
+    function realizarBusqueda(tipoBusqueda, filtro) {
         if (timeoutId) clearTimeout(timeoutId);
 
-        // Si el filtro está vacío, restaurar filas originales y actualizar referencia
+        // Si el filtro está vacío, restaurar filas originales
         if (filtro === '') {
             tablaBody.innerHTML = filasOriginales;
-            // Re-obtener y ocultar la fila de "no coincidencias" (fue recreada)
             const mensajeNoResultados = tablaBody.querySelector('#filaNoCoincidencias');
             if (mensajeNoResultados) mensajeNoResultados.style.display = 'none';
             return;
         }
 
         timeoutId = setTimeout(function() {
-            fetch('/api/cursos/buscar?codigo=' + encodeURIComponent(filtro))
+            const endpoint = tipoBusqueda === 'codigo' 
+                ? '/api/cursos/buscar?codigo=' + encodeURIComponent(filtro)
+                : '/api/cursos/buscar/nombre?nombre=' + encodeURIComponent(filtro);
+
+            fetch(endpoint)
                 .then(response => {
                     if (!response.ok) throw new Error('Error en la búsqueda');
                     return response.json();
@@ -953,6 +961,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.error('Error:', error);
                 });
         }, 300);
+    }
+
+    // Event listeners para ambos buscadores
+    buscadorCodigo.addEventListener('input', function () {
+        const filtro = this.value.trim();
+        // Limpiar el otro buscador
+        buscadorNombre.value = '';
+        realizarBusqueda('codigo', filtro);
+    });
+
+    buscadorNombre.addEventListener('input', function () {
+        const filtro = this.value.trim();
+        // Limpiar el otro buscador
+        buscadorCodigo.value = '';
+        realizarBusqueda('nombre', filtro);
     });
 });
     </script>
