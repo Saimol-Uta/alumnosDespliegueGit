@@ -610,45 +610,92 @@
             input.value = input.value.replace(/[^0-9]/g, '');
         }
 
-// Buscador por cédula (Lógica Actualizada)
-        document.addEventListener('DOMContentLoaded', function() {
-            const buscador = document.getElementById('buscadorCedula');
-            const tablaBody = document.querySelector('.table tbody');
-            const mensajeNoResultados = document.getElementById('filaNoCoincidencias');
+// Buscador por cédula usando la API
+document.addEventListener('DOMContentLoaded', function() {
+    const buscador = document.getElementById('buscadorCedula');
+    const tablaBody = document.querySelector('.table tbody');
 
-            buscador.addEventListener('input', function() {
-                const filtro = buscador.value.trim().toLowerCase();
-                let alumnosVisibles = 0;
+    // Guardar las filas originales para restaurarlas
+    const filasOriginales = tablaBody.innerHTML;
 
-                // Filtramos para ignorar mensajes de sistema
-                const filas = Array.from(tablaBody.querySelectorAll('tr')).filter(row => 
-                    row.id !== 'filaNoCoincidencias' && !row.innerText.includes('No hay alumnos registrados')
-                );
+    let timeoutId = null;
 
-                filas.forEach(function(row) {
-                    // La cédula es la primera columna (querySelector 'td' agarra el primero)
-                    const cedulaCell = row.querySelector('td'); 
-                    
-                    if (cedulaCell) {
-                        const cedula = cedulaCell.textContent.trim().toLowerCase();
-                        
-                        if (filtro === '' || cedula.includes(filtro)) {
-                            row.style.display = '';
-                            alumnosVisibles++;
-                        } else {
-                            row.style.display = 'none';
-                        }
+    buscador.addEventListener('input', function() {
+        const filtro = buscador.value.trim();
+
+        if (timeoutId) clearTimeout(timeoutId);
+
+        // Si el filtro está vacío, restaurar filas originales y actualizar referencia
+        if (filtro === '') {
+            tablaBody.innerHTML = filasOriginales;
+            // volver a obtener la fila de "no coincidencias" que fue recreada
+            return;
+        }
+
+        timeoutId = setTimeout(function() {
+            fetch('/api/alumnos/buscar?cedula=' + encodeURIComponent(filtro))
+                .then(response => {
+                    if (!response.ok) throw new Error('Error en la búsqueda');
+                    return response.json();
+                })
+                .then(alumnos => {
+                    // Re-obtener la fila de no coincidencias después de cualquier cambio de innerHTML
+                    let mensajeNoResultados = document.getElementById('filaNoCoincidencias');
+
+                    // Limpiar tabla excepto mensaje de no resultados
+                    const filas = tablaBody.querySelectorAll('tr:not(#filaNoCoincidencias)');
+                    filas.forEach(fila => fila.remove());
+
+                    if (alumnos.length === 0) {
+                        if (mensajeNoResultados) mensajeNoResultados.style.display = '';
+                    } else {
+                        if (mensajeNoResultados) mensajeNoResultados.style.display = 'none';
+
+                        alumnos.forEach(alumno => {
+                            const cursoHtml = alumno.curso
+                                ? `<span class="badge badge-primary">${alumno.curso.nombre}</span>`
+                                : `<span class="badge badge-secondary">Sin asignar</span>`;
+
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${alumno.cedula}</td>
+                                <td>${alumno.nombre}</td>
+                                <td>${alumno.apellido}</td>
+                                <td>${alumno.telefono || ''}</td>
+                                <td>${cursoHtml}</td>
+                                <td>
+                                    <button class="btn-icon" title="Editar"
+                                            data-cedula="${alumno.cedula}"
+                                            data-nombre="${alumno.nombre}"
+                                            data-apellido="${alumno.apellido}"
+                                            data-direccion="${alumno.direccion || ''}"
+                                            data-telefono="${alumno.telefono || ''}"
+                                            data-curso-id="${alumno.curso ? alumno.curso.id : ''}"
+                                            onclick="abrirModalEditar(this)"><i class="bi bi-pencil-square"></i></button>
+                                    <button class="btn-icon danger" title="Eliminar"
+                                            data-cedula="${alumno.cedula}"
+                                            data-nombre="${alumno.nombre} ${alumno.apellido}"
+                                            onclick="abrirModalEliminar(this)"><i class="bi bi-trash-fill"></i></button>
+                                </td>
+                            `;
+
+                            // Si el elemento de "no coincidencias" está en el tbody, insertarlo antes.
+                            // Si no, hacer appendChild para evitar errores con referencias obsoletas.
+                            const ref = tablaBody.querySelector('#filaNoCoincidencias');
+                            if (ref && ref.parentNode === tablaBody) {
+                                tablaBody.insertBefore(tr, ref);
+                            } else {
+                                tablaBody.appendChild(tr);
+                            }
+                        });
                     }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
-
-                // Mostrar mensaje si filtramos y no quedó nada
-                if (alumnosVisibles === 0 && filas.length > 0) {
-                    mensajeNoResultados.style.display = '';
-                } else {
-                    mensajeNoResultados.style.display = 'none';
-                }
-            });
-        });
+        }, 300);
+    });
+});
     </script>
 
     <script th:if="${modalError}">
