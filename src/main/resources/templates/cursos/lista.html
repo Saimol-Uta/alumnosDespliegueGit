@@ -679,14 +679,18 @@
             const mensajeAlumnos = document.getElementById('mensajeAlumnos');
             const mensajeSinAlumnos = document.getElementById('mensajeSinAlumnos');
             
-            if (totalAlumnos > 0) {
+            if (totalAlumnos === 1) {
+                mensajeAlumnos.textContent = `🚫 ${totalAlumnos} estudiante${totalAlumnos > 1 ? 's' : ''} se quedará sin curso.`;
+                mensajeAlumnos.style.display = 'block';
+                mensajeSinAlumnos.style.display = 'none';
+            } else if (totalAlumnos > 0) {
                 mensajeAlumnos.textContent = `🚫 ${totalAlumnos} estudiante${totalAlumnos > 1 ? 's' : ''} se quedarán sin curso.`;
                 mensajeAlumnos.style.display = 'block';
                 mensajeSinAlumnos.style.display = 'none';
-            } else {
-                mensajeAlumnos.style.display = 'none';
-                mensajeSinAlumnos.style.display = 'block';
-            }
+            }  else  {
+            mensajeAlumnos.style.display = 'none';
+            mensajeSinAlumnos.style.display = 'block';
+        }
 
             new bootstrap.Modal(document.getElementById('modalEliminar')).show();
         }
