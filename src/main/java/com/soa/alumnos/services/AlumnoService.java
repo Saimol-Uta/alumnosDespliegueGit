@@ -98,4 +98,10 @@ public class AlumnoService {
                 alumno.getCurso().getNombre(),
                 alumno.getCurso().getCodigo());
     }
+
+    public List<AlumnoResponseDto> buscarPorCedula(String cedula) {
+        return repo.findByCedulaContaining(cedula).stream()
+                .map(AlumnoResponseDto::fromEntity)
+                .toList();
+    }
 }

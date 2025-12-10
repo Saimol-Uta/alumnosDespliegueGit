@@ -31,7 +31,7 @@ public class Curso {
     @Column(name = "codigo", nullable = false, unique = true, length = 20)
     private String codigo;
 
-    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "curso", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JsonManagedReference
     @Builder.Default
     private List<Alumno> alumnos = new ArrayList<>();

@@ -12,4 +12,6 @@ public interface AlumnoRepository extends JpaRepository<Alumno, String> {
     List<Alumno> findByCurso(Curso curso);
 
     List<Alumno> findByCursoId(Long cursoId);
+
+    List<Alumno> findByCedulaContaining(String cedula);
 }

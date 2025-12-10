@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -65,11 +66,16 @@ public class CursoService {
         return CursoResponseDto.fromEntity(curso);
     }
 
+    @Transactional
     public void eliminar(Long id) {
         Curso curso = porId(id);
-        // Desasociar alumnos antes de eliminar
-        curso.getAlumnos().forEach(alumno -> alumno.setCurso(null));
-        alumnoRepo.saveAll(curso.getAlumnos());
+        // Desasociar alumnos antes de eliminar (los alumnos NO se eliminan)
+        List<Alumno> alumnosDelCurso = new ArrayList<>(curso.getAlumnos());
+        for (Alumno alumno : alumnosDelCurso) {
+            alumno.setCurso(null);
+            alumnoRepo.save(alumno);
+        }
+        curso.getAlumnos().clear();
         cursoRepo.delete(curso);
     }
 
@@ -122,6 +128,12 @@ public class CursoService {
         Curso curso = porId(cursoId);
         return alumnoRepo.findByCurso(curso).stream()
                 .map(AlumnoResponseDto::fromEntity)
+                .toList();
+    }
+
+    public List<CursoResponseDto> buscarPorCodigo(String codigo) {
+        return cursoRepo.findByCodigoContainingIgnoreCase(codigo).stream()
+                .map(CursoResponseDto::fromEntity)
                 .toList();
     }
 }

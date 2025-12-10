@@ -43,6 +43,12 @@ public class AlumnosController {
         return service.porCedulaConCurso(cedula);
     }
 
+    // Buscar alumnos por cédula (búsqueda parcial)
+    @GetMapping("/buscar")
+    public List<AlumnoResponseDto> buscarPorCedula(@RequestParam String cedula) {
+        return service.buscarPorCedula(cedula);
+    }
+
     @DeleteMapping("/{cedula}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminarAlumno(@PathVariable String cedula) {
