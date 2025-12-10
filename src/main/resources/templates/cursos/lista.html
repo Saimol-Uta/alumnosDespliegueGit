@@ -561,7 +561,7 @@
                     <h5 class="mb-3">¿Estás seguro?</h5>
                     <p class="text-muted mb-1">Esta acción eliminará permanentemente el curso:</p>
                     <p class="fs-5 fw-bold text-dark" id="eliminarNombre"></p>
-                    <p id="mensajeAlumnos" class="text-warning small" style="display: none;"></p>
+                    <p id="mensajeAlumnos" class="text-danger small" style="display: none;"></p>
                     <p id="mensajeSinAlumnos" class="text-muted small">Este curso no tiene alumnos asignados.</p>
                 </div>
                 <div class="modal-footer" style="justify-content: center;">
@@ -680,7 +680,7 @@
             const mensajeSinAlumnos = document.getElementById('mensajeSinAlumnos');
             
             if (totalAlumnos > 0) {
-                mensajeAlumnos.textContent = `⚠️ ${totalAlumnos} estudiante${totalAlumnos > 1 ? 's' : ''} se quedarán sin curso.`;
+                mensajeAlumnos.textContent = `🚫 ${totalAlumnos} estudiante${totalAlumnos > 1 ? 's' : ''} se quedarán sin curso.`;
                 mensajeAlumnos.style.display = 'block';
                 mensajeSinAlumnos.style.display = 'none';
             } else {
